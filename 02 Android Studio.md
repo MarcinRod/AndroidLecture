@@ -601,5 +601,121 @@ dependencies {
 
 ✅ **Sprawdź oficjalną dokumentację** [Android Studio](https://developer.android.com/studio) i [Gradle](https://docs.gradle.org/current/userguide/userguide.html).
 
+---
+
+## 🌿 Zarządzanie gałęziami Git w projekcie Android
+
+Android Studio ma wbudowaną integrację z Git, co ułatwia zarządzanie kodem źródłowym. Jedną z najczęściej wykonywanych operacji jest usuwanie niepotrzebnych gałęzi (branches).
+
+### 🗑️ Jak usunąć gałąź w repozytorium Git?
+
+#### 1. Usuwanie lokalnej gałęzi
+
+**Bezpieczne usunięcie (tylko gałęzie, które zostały już zmergowane):**
+```bash
+git branch -d nazwa-galezi
+```
+
+**Przykład:**
+```bash
+git branch -d feature/logowanie
+```
+
+**Wymuszenie usunięcia (nawet jeśli gałąź nie została zmergowana):**
+```bash
+git branch -D nazwa-galezi
+```
+
+**Przykład:**
+```bash
+git branch -D feature/eksperymentalna-funkcja
+```
+
+#### 2. Usuwanie zdalnej gałęzi (na serwerze, np. GitHub)
+
+```bash
+git push origin --delete nazwa-galezi
+```
+
+**Przykład:**
+```bash
+git push origin --delete feature/logowanie
+```
+
+**Alternatywna składnia:**
+```bash
+git push origin :nazwa-galezi
+```
+
+#### 3. Usuwanie referencji do usuniętych zdalnych gałęzi
+
+Po usunięciu gałęzi na serwerze, lokalne referencje do zdalnych gałęzi mogą pozostać. Aby je wyczyścić:
+
+```bash
+git remote prune origin
+```
+
+lub podczas pobierania zmian:
+
+```bash
+git fetch --prune
+```
+
+### 🛡️ Bezpieczne praktyki przy usuwaniu gałęzi
+
+#### Sprawdź status przed usunięciem:
+
+```bash
+# Zobacz wszystkie gałęzie
+git branch -a
+
+# Sprawdź, czy gałąź została zmergowana
+git branch --merged
+
+# Sprawdź, które gałęzie nie zostały zmergowane
+git branch --no-merged
+```
+
+#### Upewnij się, że nie jesteś na gałęzi, którą chcesz usunąć:
+
+```bash
+# Przełącz się na main/master przed usunięciem
+git checkout main
+git branch -d stara-galaz
+```
+
+### 🎯 Zarządzanie gałęziami w Android Studio
+
+Android Studio oferuje graficzny interfejs do zarządzania gałęziami Git:
+
+1. **Menu:** `Git` → `Branches...` (lub `Ctrl+Shift+`\``)
+2. **Prawym przyciskiem myszy** na nazwę gałęzi w oknie dialogowym
+3. **Wybierz:** `Delete` aby usunąć lokalną gałąź
+4. **Zaznacz:** `Delete Tracked Branch on Origin` aby usunąć także zdalną gałąź
+
+### ⚠️ Uwagi i ostrzeżenia
+
+- **Nigdy nie usuwaj gałęzi `main` lub `master`** – to główne gałęzie projektu
+- **Sprawdź dwukrotnie** przed wymuszeniem usunięcia (`-D`) niezmergowanych gałęzi
+- **Zachowaj kopię zapasową** ważnych zmian przed usunięciem gałęzi
+- **Komunikuj się z zespołem** przed usunięciem wspólnych gałęzi zdalnych
+
+### 📚 Przydatne komendy Git dla deweloperów Android
+
+```bash
+# Listowanie wszystkich gałęzi (lokalnych i zdalnych)
+git branch -a
+
+# Usunięcie wszystkich lokalnych gałęzi, które zostały już zmergowane
+git branch --merged | grep -v '\*\|main\|master' | xargs -n 1 git branch -d
+
+# Sprawdzenie, która gałąź została ostatnio zmodyfikowana
+git for-each-ref --sort=-committerdate refs/heads/
+
+# Usunięcie lokalnych referencji do usuniętych zdalnych gałęzi
+git remote prune origin
+```
+
+---
 
 ### 🧭 **Następny temat:** [Koncepcję aktywności i jej cykl życia](https://github.com/MarcinRod/AndroidLecture2025/blob/main/03%20Aktywność.md)
