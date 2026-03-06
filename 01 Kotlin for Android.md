@@ -647,6 +647,9 @@ Funkcje i właściwości rozszerzające (extension functions, extension properti
 
 ---
 
+## 📱Aplikacja pokazowa:
+- [KotlinShowcase](https://github.com/MarcinRod/KotlinShowcase)
+
 ## 📚 Dokumentacja i materiały
 
 - [Oficjalna dokumentacja Kotlin](https://kotlinlang.org/docs/home.html)
