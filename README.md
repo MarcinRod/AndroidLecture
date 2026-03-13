@@ -14,6 +14,9 @@
 ### [5. Funkcje kompozycyjne](https://github.com/MarcinRod/AndroidLecture2025/blob/main/05%20Funkcje%20kompozycyjne.md)  
    Composable, nazewnictwo, Modifier, state hoisting, kontenery, elementy UI, podgląd, dobre praktyki.
 
+## 📱Aplikacja pokazowa do tematów 3-5:
+- [QuizShowcase](https://github.com/MarcinRod/QuizShowcase)
+- 
 ### [6. Komponent nawigacji](https://github.com/MarcinRod/AndroidLecture2025/blob/main/06%20Komponent%20nawigacji.md)  
    Navigation Compose, NavHost, NavController, przekazywanie argumentów, zagnieżdżone grafy, bezpieczeństwo typów tras.
 
