@@ -14,13 +14,14 @@
 ### [5. Funkcje kompozycyjne](https://github.com/MarcinRod/AndroidLecture2025/blob/main/05%20Funkcje%20kompozycyjne.md)  
    Composable, nazewnictwo, Modifier, state hoisting, kontenery, elementy UI, podgląd, dobre praktyki.
 
-#### 📱Aplikacja pokazowa do tematów 3-5: [QuizShowcase](https://github.com/MarcinRod/QuizShowcase)
+### 📱Aplikacja pokazowa do tematów 3-5: [QuizShowcase](https://github.com/MarcinRod/QuizShowcase)
   
 ### [6. Komponent nawigacji](https://github.com/MarcinRod/AndroidLecture2025/blob/main/06%20Komponent%20nawigacji.md)  
    Navigation Compose, NavHost, NavController, przekazywanie argumentów, zagnieżdżone grafy, bezpieczeństwo typów tras.
 
 ### [7. Intencje](https://github.com/MarcinRod/AndroidLecture2025/blob/main/07%20Intencje.md)  
    Explicit/Implicit Intent, przekazywanie danych, Parcelable/Serializable, filtry intencji, intencje a Navigation Compose.
+### 📱Aplikacja pokazowa do tematów 6-7: [ShoppingListShowcase](https://github.com/MarcinRod/ShoppingListShowcase)
 
 ### [8. Manifest i pozwolenia](https://github.com/MarcinRod/AndroidLecture2025/blob/main/08%20Manifest%20i%20pozwolenia.md)  
    AndroidManifest.xml, deklaracja komponentów, uprawnienia, system pozwoleń, runtime permissions, ActivityResultContracts.
