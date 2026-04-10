@@ -40,6 +40,12 @@
 ### [11. Bazy danych – Room](https://github.com/MarcinRod/AndroidLecture2025/blob/main/11%20Bazy%20danych%20-%20Room.md)  
    Room, Entity, DAO, Database, singleton, operacje na bazie, Flow, TypeConverter, przykłady użycia.
 
+--- 
+### 📱Aplikacja pokazowa do tematów 8-11: [ReminderShowcase](https://github.com/MarcinRod/ReminderShowcase) 
+Repozytorium ma dwie gałęzie - gałąź master pokazuje różnice między podejściem z i bez MVVM oraz bez relacyjnej bazy danych
+
+---
+
 ### [12. Komunikacja przez Internet – Retrofit](https://github.com/MarcinRod/AndroidLecture2025/blob/main/12%20Komunikacja%20przez%20Internet%20-%20Retorfit.md)  
    Pozwolenia, API, REST, JSON, Retrofit, OkHttp, Moshi, model danych, interfejs API, Call, korutyny, ViewModel.
 
