@@ -25,8 +25,11 @@
    Explicit/Implicit Intent, przekazywanie danych, Parcelable/Serializable, filtry intencji, intencje a Navigation Compose.
 
 --- 
+
 ### 📱Aplikacja pokazowa do tematów 6-7: [ShoppingListShowcase](https://github.com/MarcinRod/ShoppingListShowcase)
+
 --- 
+
 
 ### [8. Manifest i pozwolenia](https://github.com/MarcinRod/AndroidLecture2025/blob/main/08%20Manifest%20i%20pozwolenia.md)  
    AndroidManifest.xml, deklaracja komponentów, uprawnienia, system pozwoleń, runtime permissions, ActivityResultContracts.
@@ -41,6 +44,7 @@
    Room, Entity, DAO, Database, singleton, operacje na bazie, Flow, TypeConverter, przykłady użycia.
 
 --- 
+
 ### 📱Aplikacja pokazowa do tematów 8-11: [ReminderShowcase](https://github.com/MarcinRod/ReminderShowcase) 
 Repozytorium ma dwie gałęzie - gałąź master pokazuje różnice między podejściem z i bez MVVM oraz bez relacyjnej bazy danych
 
@@ -51,3 +55,10 @@ Repozytorium ma dwie gałęzie - gałąź master pokazuje różnice między pode
 
 ### [13. Platforma Firebase](https://github.com/MarcinRod/AndroidLecture2025/blob/main/13%20Platforma%20Firebase.md)  
    Usługi Firebase, konfiguracja, Authentication, Realtime Database, struktura bazy, referencje, zapis i odczyt danych.
+   
+--- 
+
+### 📱Aplikacja pokazowa do tematów 12-13: [SipRank](https://github.com/MarcinRod/SipRank) 
+
+---
+  
