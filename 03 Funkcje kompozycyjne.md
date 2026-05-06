@@ -1,20 +1,20 @@
-# 🧩 Funkcje kompozycyjne w Jetpack Compose
+# Funkcje kompozycyjne w Jetpack Compose
 
-## 🔹 Co to są funkcje kompozycyjne?
+## Co to są funkcje kompozycyjne?
 
 **Funkcje kompozycyjne** (ang. *composable functions*) to podstawowy budulec interfejsu użytkownika w Jetpack Compose. Są to funkcje w języku Kotlin oznaczone adnotacją `@Composable`, które opisują, jak powinien wyglądać fragment UI.
 
 ---
 
-## 🏷️ Nazewnictwo funkcji kompozycyjnych
+## Nazewnictwo funkcji kompozycyjnych
 
 - Funkcje kompozycyjne powinny mieć nazwy w stylu **PascalCase** (każde słowo z wielkiej litery, bez podkreśleń), np. `UserCard`, `LoginScreen`, `Greeting`.
-- Nazwa funkcji powinna jasno wskazywać, **co dana funkcja wyświetla lub realizuje** – unikaj nazw ogólnych typu `MyComposable` czy `TestFunction`.
-- Jeśli funkcja kompozycyjna reprezentuje cały ekran, zakończ jej nazwę słowem `Screen`, np. `ProfileScreen`, `SettingsScreen`.
-- Dla mniejszych, wielokrotnego użytku elementów stosuj nazwy opisujące ich rolę, np. `UserAvatar`, `ProductItem`, `ErrorMessage`.
+- Nazwa funkcji powinna jasno wskazywać, **co dana funkcja wyświetla lub realizuje** – należy unikać nazw ogólnych typu `MyComposable` czy `TestFunction`.
+- Jeśli funkcja kompozycyjna reprezentuje cały ekran, jej nazwa powinna kończyć się słowem `Screen`, np. `ProfileScreen`, `SettingsScreen`.
+- Dla mniejszych, wielokrotnego użytku elementów zalecane jest stosowanie nazw opisujących ich rolę, np. `UserAvatar`, `ProductItem`, `ErrorMessage`.
 - Jeśli funkcja jest **prywatna dla pliku** (nie powinna być używana poza plikiem), można dodać prefix `_`, np. `_UserAvatar`. To konwencja Compose, która sygnalizuje, że funkcja jest "wewnętrzna".
-- Unikaj skrótów i nieczytelnych nazw – kod Compose powinien być samoopisujący się.
-- Funkcje kompozycyjne nie powinny mieć czasowników w trybie rozkazującym (np. `ShowUser`), lecz raczej rzeczowniki lub rzeczowniki z przymiotnikami (`UserCard`, `ErrorDialog`).
+- Należy unikać skrótów i nieczytelnych nazw – kod Compose powinien być samoopisujący się.
+- Nazwy funkcji kompozycyjnych nie powinny zawierać czasowników w trybie rozkazującym (np. `ShowUser`), lecz raczej rzeczowniki lub rzeczowniki z przymiotnikami (`UserCard`, `ErrorDialog`).
 
 **Przykłady dobrego nazewnictwa:**
 - `LoginScreen`
@@ -33,11 +33,11 @@ Dobre nazewnictwo ułatwia czytanie, testowanie i ponowne wykorzystanie kodu w w
 
 ---
 
-## 🧱 Rola modyfikatora (`Modifier`)
+## Rola modyfikatora (`Modifier`)
 
 - **Modifier** to specjalny obiekt w Compose, który pozwala modyfikować wygląd, rozmiar, pozycję i zachowanie elementów UI.
-- Modifier jest przekazywany jako parametr do większości composable i umożliwia "nakładanie" wielu efektów w łańcuchu wywołań.
-- Każdy composable przyjmujący `Modifier` powinien mieć go jako pierwszy parametr domyślny, np.:
+- Modifier jest przekazywany jako parametr do większości funkcji kompozycyjnych i umożliwia "nakładanie" wielu efektów w łańcuchu wywołań.
+- Każda funkcja kompozycyjna przyjmujący `Modifier` powinien mieć go jako pierwszy parametr domyślny, np.:
   ```kotlin
   @Composable
   fun MyButton(
@@ -49,7 +49,7 @@ Dobre nazewnictwo ułatwia czytanie, testowanie i ponowne wykorzystanie kodu w w
       }
   }
   ```
-- Dzięki temu możesz łatwo łączyć modyfikatory i przekazywać je z zewnątrz, np.:
+- Dzięki temu możliwe jest łatwe łączenie modyfikatorów i przekazywanie ich z zewnątrz, np.:
   ```kotlin
   MyButton(
       onClick = { /* ... */ },
@@ -59,7 +59,7 @@ Dobre nazewnictwo ułatwia czytanie, testowanie i ponowne wykorzystanie kodu w w
   )
   ```
 
-### ✨ Najczęściej używane funkcje Modifiera
+###  Najczęściej używane funkcje Modifiera
 
 - `padding(...)` – dodaje odstęp wewnętrzny wokół elementu.
 - `fillMaxWidth()`, `fillMaxHeight()`, `fillMaxSize()` – rozciąga element do maksymalnej szerokości/wysokości/rozmiaru rodzica.
@@ -69,7 +69,10 @@ Dobre nazewnictwo ułatwia czytanie, testowanie i ponowne wykorzystanie kodu w w
 - `weight(...)` – rozdziela przestrzeń w Row/Column proporcjonalnie.
 - `offset(...)` – przesuwa element względem jego pozycji.
 - `align(...)` – ustawia wyrównanie w kontenerze (np. w Box).
+- `clip(shape)` – przycina obszar rysowania do podanego kształtu (np. `CircleShape`, `RoundedCornerShape`). Stosowany przed `background()`, aby wypełnienie respektowało kształt.
+- `border(...)` – rysuje obrys wokół elementu.
 - `wrapContentWidth()`, `wrapContentHeight()` – dopasowuje rozmiar do zawartości.
+- `verticalScroll(rememberScrollState())` – umożliwia przewijanie zawartości kontenera w pionie (stosowane na `Column` lub innym kontenerze).
 
 **Przykład łączenia modyfikatorów:**
 ```kotlin
@@ -83,18 +86,109 @@ Text(
 )
 ```
 
-> **Wskazówka:**  
-> Kolejność wywołań ma znaczenie – najpierw wykonywany jest pierwszy modyfikator z łańcucha, potem kolejne.
+> **Wskazówka — kolejność modyfikatorów ma znaczenie:**
+>
+> ```kotlin
+> // A: padding → background — obszar padding NIE jest pokolorowany
+> Text("A", modifier = Modifier.padding(12.dp).background(Color.Yellow))
+>
+> // B: background → padding — tło pokrywa obszar padding
+> Text("B", modifier = Modifier.background(Color.Yellow).padding(12.dp))
+> ```
+> Obie linie produkują różny wynik wizualny. W przypadku A padding leży „na zewnątrz" tła; w przypadku B tło obejmuje również obszar padding.
 
 Modyfikatory pozwalają budować elastyczne, responsywne i interaktywne UI w Compose bez konieczności dziedziczenia po widokach czy stosowania złożonych układów.
 
 ---
 
-## 🔄 Wynoszenie stanu (State Hoisting)
+## Stan, kompozycja i rekompozycja
 
-- **State hoisting** to wzorzec polegający na przekazywaniu stanu i funkcji do jego zmiany z composable nadrzędnego do podrzędnego.
-- Dzięki temu composable są bardziej uniwersalne, łatwiejsze do testowania i ponownego użycia, ponieważ nie zarządzają swoim stanem wewnętrznie, lecz otrzymują go z zewnątrz.
-- Wynoszenie stanu pozwala na lepszą kontrolę nad logiką aplikacji i ułatwia zarządzanie cyklem życia stanu (np. resetowanie, zapisywanie, synchronizację z ViewModel).
+### Kompozycja
+
+**Kompozycja** (ang. *composition*) to proces, w którym środowisko wykonawcze Compose wywołuje funkcje oznaczone adnotacją `@Composable` i buduje na ich podstawie drzewo elementów UI. Kompozycja zachodzi tylko raz przy pierwszym renderowaniu ekranu.
+
+### Stan
+
+**Stan** (ang. *state*) to każda wartość, której zmiana może powodować aktualizację UI. Compose automatycznie śledzi, które funkcje kompozycyjne odczytują dany stan, i powtarza ich wywołanie po każdej zmianie tej wartości.
+
+#### `mutableStateOf`
+
+Tworzy obiekt przechowujący wartość, którego zmiany są automatycznie śledzone przez Compose. Każda modyfikacja wartości powoduje rekompozycję fragmentów UI, które tę wartość odczytują.
+
+```kotlin
+var count = mutableStateOf(0)   // bez remember — wartość zostanie zresetowana przy rekompozycji
+```
+
+#### `remember`
+
+Przechowuje wartość **wewnątrz kompozycji** — wartość przeżywa kolejne rekompozycje, lecz jest tracona przy zniszczeniu composable (np. przy zmianie konfiguracji).
+
+```kotlin
+var count by remember { mutableStateOf(0) }   // wartość przeżywa rekompozycję
+```
+
+Oba mechanizmy stosowane są łącznie: `remember { mutableStateOf(...) }`.
+
+> **Delegacja przez `by`**  
+> Kotlin udostępnia operator delegacji `by`, który pozwala odczytywać i zapisywać wartość stanu bezpośrednio — bez ręcznego wywoływania `.value`:
+> ```kotlin
+> // bez by — dostęp przez .value
+> val count = remember { mutableStateOf(0) }
+> count.value++
+> Text("${count.value}")
+>
+> // z by — bezpośredni dostęp
+> var count by remember { mutableStateOf(0) }
+> count++
+> Text("$count")
+> ```
+> Użycie `by` wymaga importu `getValue`/`setValue` z pakietu `androidx.compose.runtime`.
+
+#### `rememberSaveable`
+
+Działa jak `remember`, ale dodatkowo zapisuje wartość w `Bundle` — stan przeżywa **zmianę konfiguracji** (np. obrót ekranu). Omówiono szerzej w rozdziale o aktywności.
+
+```kotlin
+var text by rememberSaveable { mutableStateOf("") }
+```
+
+### Rekompozycja
+
+**Rekompozycja** (ang. *recomposition*) to ponowne wywołanie funkcji kompozycyjnych w odpowiedzi na zmianę stanu. Compose identyfikuje, które funkcje kompozycyjne zależą od zmienionego stanu, i przerysowuje **tylko je** — nie cały ekran.
+
+```
+Zmiana stanu → Compose wykrywa zależności → rekompozycja minimalnego podzbioru UI
+```
+
+Kluczowe właściwości rekompozycji:
+- Jest **selektywna** — dotyczy wyłącznie funkcji kompozycyjnych odczytujących zmieniony stan.
+- Może zachodzić **wielokrotnie** — funkcje kompozycyjne powinny tylko opisywać wygląd UI na podstawie przekazanych danych, bez wykonywania operacji takich jak zapis do bazy czy wywołanie sieciowe. Takie operacje mogą być wywołane wielokrotnie i w nieprzewidywalnej kolejności.
+- Compose może **pominąć** rekompozycję funkcji, jeśli jej parametry nie uległy zmianie (*smart recomposition*).
+
+### Efekty uboczne
+
+Gdy konieczne jest wykonanie operacji poza kompozycją (np. wywołanie API) należy użyć dedykowanych funkcji efektów, takich jak `LaunchedEffect`czy  `DisposableEffect`. Gwarantują one bezpieczne wykonanie operacji w odpowiednim momencie cyklu życia kompozycji.
+
+> Efekty uboczne są omówione szczegółowo w rozdziale poświęconym korutynom: [Zadania w tle – Korutyny](https://github.com/MarcinRod/AndroidLecture2025/blob/main/10%20Zadania%20w%20tle%20-%20Korutyny.md).
+
+### Przepływ danych — stan w dół, zdarzenia w górę
+
+Standardowy wzorzec przepływu danych w Compose: stan przekazywany jest **w dół** przez parametry funkcji kompozycyjnych, a zdarzenia (callbacki) propagują **w górę** ku właścicielowi stanu. Jest to fundament wzorca *state hoisting* opisanego w kolejnej sekcji.
+
+```
+Właściciel stanu (np. Screen)
+  │  stan (w dół)
+  ▼
+ComposableChild(value, onValueChange)
+                       │  zdarzenie (w górę)
+                       ▲
+```
+
+---
+
+## Wynoszenie stanu (State Hoisting)
+
+**State hoisting** to wzorzec polegający na przekazywaniu stanu i funkcji do jego zmiany z nadrzędnej funkcji kompozycyjnej do podrzędnej, zamiast przechowywania stanu wewnętrznie.
 
 ### Jak to wygląda w praktyce?
 
@@ -127,39 +221,106 @@ fun CounterScreen() {
 }
 ```
 
-- Funkcja `Counter` nie zarządza już swoim stanem – otrzymuje go jako parametr oraz przyjmuje funkcję do jego zmiany.
-- Funkcja nadrzędna (`CounterScreen`) zarządza stanem i przekazuje go do composable podrzędnego.
+Funkcja `Counter` nie zarządza już swoim stanem — otrzymuje go jako parametr oraz przyjmuje funkcję do jego zmiany. Funkcja nadrzędna (`CounterScreen`) jest właścicielem stanu.
+
+### Stateful vs Stateless
+
+Funkcja kompozycyjna zarządzająca własnym stanem wewnętrznym to **stateful composable**. Funkcja, która otrzymuje stan i callbacki jako parametry i sama nie przechowuje żadnego stanu, to **stateless composable**.
+
+```kotlin
+// Stateful — stan wewnętrzny, mniejsza elastyczność
+@Composable
+fun CounterStateful() {
+    var count by remember { mutableStateOf(0) }
+    Button(onClick = { count++ }) { Text("$count") }
+}
+
+// Stateless — stan z zewnątrz, pełna elastyczność
+@Composable
+fun CounterStateless(count: Int, onIncrement: () -> Unit) {
+    Button(onClick = onIncrement) { Text("$count") }
+}
+```
 
 ### Zalety state hoistingu
 
-- **Reużywalność:** Ten sam composable można wykorzystać w różnych miejscach z różnym stanem.
-- **Testowalność:** Łatwiej testować composable, które nie mają własnego stanu.
+- **Reużywalność:** Ta sama funkcja kompozycyjna może być wykorzystana w różnych miejscach z różnym stanem.
+- **Testowalność:** Łatwiej testować funkcje kompozycyjne, które nie mają własnego stanu.
 - **Przewidywalność:** Stan jest zarządzany w jednym miejscu, co ułatwia debugowanie i utrzymanie kodu.
 - **Integracja z ViewModel:** Wyniesiony stan łatwo powiązać z ViewModel lub innym źródłem danych.
 
 ### Kiedy NIE wynosić stanu?
 
-- Jeśli stan jest **czysto lokalny** i nie wpływa na inne elementy UI, można go przechowywać wewnątrz composable (np. rozwinięcie menu, lokalny efekt animacji).
+Jeśli stan jest **czysto lokalny** i nie wpływa na inne elementy UI, można go przechowywać wewnątrz funkcji kompozycyjnej (np. rozwinięcie menu, lokalny efekt animacji).
 
 ---
 
 > **Więcej o state hoisting:**  
 > [State hoisting – oficjalny poradnik](https://developer.android.com/jetpack/compose/state#hoisting)
----
-## 📦 Podstawowe kontenery i często używane elementy
 
-W Compose kontenery służą do organizowania i układania elementów UI względem siebie. Oto najważniejsze z nich wraz z często wykorzystywanymi parametrami:
-- **Column** – układa elementy pionowo.
-- **Row** – układa elementy poziomo.
-- **Box** – nakłada elementy na siebie (pozycjonowanie).
-- **LazyColumn** – lista przewijana pionowo (odpowiednik RecyclerView).
-- **LazyRow** – lista przewijana poziomo.
-- **Card** – kontener z zaokrąglonymi rogami i cieniem.
-- **Surface** – podstawowy kontener z tłem i efektem podniesienia.
-- **Spacer** – element do tworzenia odstępów.
-- **Scaffold** – kontener do budowy typowych układów aplikacji (np. z paskiem górnym, dolnym, FAB).
-  
-### Przykłady
+---
+
+## Material Design i `MaterialTheme`
+
+**Material Design** to system projektowania interfejsów użytkownika opracowany przez Google. Definiuje zestaw zasad, komponentów i wytycznych dotyczących wyglądu, animacji i zachowania UI — tak aby aplikacje na różnych platformach były spójne, czytelne i dostępne.
+
+Aktualna wersja to **Material Design 3** (Material You), która wprowadza m.in. dynamiczne kolory dostosowujące się do tapety użytkownika (Android 12+) oraz zaktualizowane komponenty i typografię.
+
+### `MaterialTheme`
+
+W Jetpack Compose system Material Design jest dostępny przez obiekt `MaterialTheme`, który dostarcza trzy główne zasoby projektowe:
+
+| Zasób | Opis | Przykład użycia |
+|---|---|---|
+| `colorScheme` | Paleta kolorów aplikacji (tło, powierzchnie, akcenty, błędy) | `MaterialTheme.colorScheme.primary` |
+| `typography` | Zestaw stylów tekstowych (nagłówki, ciało, etykiety) | `MaterialTheme.typography.bodyLarge` |
+| `shapes` | Zestaw kształtów (małe, średnie, duże zaokrąglenia) | `MaterialTheme.shapes.medium` |
+
+Komponenty takie jak `Button`, `Card`, `Surface` czy `Scaffold` automatycznie korzystają z tych zasobów — zmiana motywu aplikacji (np. tryb ciemny, inne kolory marki) automatycznie aktualizuje wygląd wszystkich komponentów.
+
+### Jak wygląda definicja motywu?
+
+Motyw aplikacji definiowany jest typowo w pliku `Theme.kt` i owijany wokół całej zawartości `MainActivity`:
+
+```kotlin
+@Composable
+fun MyAppTheme(content: @Composable () -> Unit) {
+    MaterialTheme(
+        colorScheme = lightColorScheme(
+            primary = Color(0xFF6750A4),
+            secondary = Color(0xFF625B71)
+        ),
+        typography = Typography(),
+        content = content
+    )
+}
+```
+
+### Tryb ciemny
+
+Motyw może reagować na ustawienia systemowe trybu ciemnego:
+
+```kotlin
+val darkTheme = isSystemInDarkTheme()
+val colorScheme = if (darkTheme) darkColorScheme(...) else lightColorScheme(...)
+```
+
+> Szczegóły tworzenia własnego motywu są poza zakresem tego rozdziału. Android Studio generuje domyślny motyw przy tworzeniu projektu Compose.
+
+---
+
+## Elementy interfejsu użytkownika
+
+Jetpack Compose udostępnia bogaty zestaw gotowych funkcji kompozycyjnych do budowania interfejsów użytkownika. Pełna lista dostępnych komponentów Material3 wraz z interaktywnym demo dostępna jest w:
+- [Material Design 3 – komponenty](https://m3.material.io/components)
+- [Material Design Catalog App](https://play.google.com/store/apps/details?id=androidx.compose.material.catalog)
+
+---
+
+### Kontenery układu
+
+Kontenery służą do organizowania i pozycjonowania elementów UI względem siebie.
+
 - **Column**
   - Układa elementy pionowo, jeden pod drugim.
   - Najczęstsze parametry:
@@ -197,7 +358,7 @@ W Compose kontenery służą do organizowania i układania elementów UI względ
     ```
 
 - **Box**
-  - Pozwala nakładać elementy na siebie (pozycjonowanie względem siebie).
+  - Pozwala nakładać elementy na siebie (pozycjonowanie względem siebie). Dzieci są rysowane w kolejności deklaracji — **ostatnie zadeklarowane dziecko jest na wierzchu** (najwyższy z-order).
   - Najczęstsze parametry:
     - `modifier`
     - `contentAlignment` – domyślne wyrównanie wszystkich dzieci (np. `Alignment.Center`).
@@ -219,17 +380,37 @@ W Compose kontenery służą do organizowania i układania elementów UI względ
     - `contentPadding` – padding wewnątrz listy.
     - `verticalArrangement`
     - `horizontalAlignment`
-  - Przykład:
+  - Przykład z rzeczywistą listą danych:
     ```kotlin
+    data class Person(val id: Int, val name: String)
+
+    val people = listOf(Person(1, "Anna"), Person(2, "Jan"), Person(3, "Maria"))
+
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
-        contentPadding = PaddingValues(16.dp)
+        contentPadding = PaddingValues(16.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        items(100) { index ->
-            Text("Element #$index")
+        items(
+            items = people,
+            key = { person -> person.id }   // stabilny klucz — zapobiega błędom animacji
+        ) { person ->
+            Text(
+                text = person.name,
+                modifier = Modifier.animateItem()   // animacja dodawania/usuwania/przesuwania elementów
+            )
         }
     }
     ```
+
+  **Animacja elementów listy (`animateItem`)**
+
+  `Modifier.animateItem()` dodany do elementu listy powoduje, że:
+  - nowe elementy pojawiają się z animacją wejścia (fade in),
+  - usunięte elementy znikają z animacją wyjścia (fade out),
+  - przesunięcia kolejności elementów są animowane płynnie.
+
+  Parametr `key` jest niezbędny przy animacjach — bez niego Compose nie może zidentyfikować, który element się przemieścił, a który jest nowy.
 
 - **LazyRow**
   - Lista przewijana poziomo.
@@ -251,41 +432,85 @@ W Compose kontenery służą do organizowania i układania elementów UI względ
     }
     ```
 
-- **Card**
-  - Kontener z zaokrąglonymi rogami i cieniem.
-  - Najczęstsze parametry:
+---
+
+### Kontenery Material3
+
+Kontenery Material3 automatycznie korzystają z motywu aplikacji (`colorScheme`, `shapes`), co zapewnia wizualną spójność z systemem Material Design.
+
+- **Card**, **ElevatedCard**, **OutlinedCard**
+  - Kontenery Material3 z wbudowaną elewacją, kształtem i kolorem tła z motywu. Służą do grupowania powiązanych treści w wizualnie wyróżniony kafelek.
+  - Warianty:
+    - `Card` – wypełniony, domyślna elewacja tonalna.
+    - `ElevatedCard` – jak `Card`, ale z wyraźniejszym cieniem (element wizualnie unosi się nad tłem).
+    - `OutlinedCard` – obrys zamiast cienia, płaski wygląd.
+    - `Card(onClick = …)` – klikalny wariant z efektem ripple.
+  - Kluczowe parametry:
     - `modifier`
-    - `shape` – kształt karty (np. RoundedCornerShape).
-    - `elevation` – cień pod kartą.
-    - `backgroundColor`
+    - `shape` – kształt karty (np. `RoundedCornerShape(16.dp)`).
+    - `colors` – `CardDefaults.cardColors(containerColor = …)` — nadpisuje kolor tła z motywu.
+    - `elevation` – `CardDefaults.cardElevation(defaultElevation = …)` — kontroluje cień.
+    - `onClick` – jeśli podany, cały Card staje się interaktywny.
   - Przykład:
     ```kotlin
+    // Wariant wypełniony
+    Card(modifier = Modifier.fillMaxWidth()) {
+        Text("Basic Card", modifier = Modifier.padding(16.dp))
+    }
+
+    // Wariant z obramowaniem
+    OutlinedCard(modifier = Modifier.fillMaxWidth()) {
+        Text("Outlined Card", modifier = Modifier.padding(16.dp))
+    }
+
+    // Klikalny wariant ze zmianą koloru
+    var selected by remember { mutableStateOf(false) }
     Card(
-        modifier = Modifier.padding(8.dp),
-        shape = RoundedCornerShape(16.dp),
-        elevation = CardDefaults.cardElevation(8.dp)
+        onClick = { selected = !selected },
+        modifier = Modifier.fillMaxWidth(),
+        colors = CardDefaults.cardColors(
+            containerColor = if (selected)
+                MaterialTheme.colorScheme.primaryContainer
+            else
+                MaterialTheme.colorScheme.surfaceContainerHigh
+        )
     ) {
-        Text("To jest karta")
+        Text(
+            text = if (selected) "Zaznaczono ✓" else "Kliknij, aby zaznaczyć",
+            modifier = Modifier.padding(16.dp)
+        )
     }
     ```
 
 - **Surface**
-  - Podstawowy kontener z tłem i efektem podniesienia.
-  - Najczęstsze parametry:
+  - Bardziej podstawowy kontener niż `Card` — daje pełną kontrolę nad kolorem, kształtem i elewacją.
+  - Kluczowe parametry:
     - `modifier`
-    - `color`
-    - `shape`
-    - `shadowElevation`
+    - `color` – kolor tła (domyślnie `colorScheme.surface`).
+    - `shape` – kształt (np. `RoundedCornerShape`, `CircleShape`).
+    - `tonalElevation` – nakłada odcień koloru z motywu proporcjonalny do elewacji (efekt Material You). Nie tworzy cienia.
+    - `shadowElevation` – głębokość fizycznego cienia w dp (wizualny efekt uniesienia).
+    - `contentColor` – kolor propagowany do dzieci przez `LocalContentColor`.
+    - `onClick` – jeśli podany, Surface staje się klikalna z efektem ripple.
   - Przykład:
     ```kotlin
     Surface(
-        color = Color.White,
-        shape = RoundedCornerShape(8.dp),
-        shadowElevation = 4.dp
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(12.dp),
+        color = MaterialTheme.colorScheme.tertiaryContainer,
+        shadowElevation = 4.dp,
+        tonalElevation = 4.dp
     ) {
-        Text("Zawartość")
+        Text("Zawartość", modifier = Modifier.padding(16.dp))
     }
     ```
+
+  **Card vs Surface**
+
+  | Komponent | Kiedy stosować |
+  |-----------|----------------|
+  | `Card` | Gotowe domyślne ustawienia Material3 — kafelki z treścią |
+  | `Surface` | Pełna kontrola stylu — niestandardowe kontenery, nakładki, tła ekranów |
 
 - **Spacer**
   - Element do tworzenia odstępów między innymi elementami.
@@ -297,7 +522,7 @@ W Compose kontenery służą do organizowania i układania elementów UI względ
     ```
 
 - **Scaffold**
-  - Scaffold` to kontener, który ułatwia budowanie standardowych układów aplikacji zgodnych z Material Design. 
+  - `Scaffold` to kontener, który ułatwia budowanie standardowych układów aplikacji zgodnych z Material Design.
   - Pozwala łatwo dodać pasek górny (`TopAppBar`), dolny (`BottomAppBar`), przycisk FAB, szufladę nawigacyjną i inne elementy.
 
 ```kotlin
@@ -335,12 +560,10 @@ fun MainScreen() {
 - `drawerContent` – zawartość szuflady nawigacyjnej
 - `snackbarHost` – obsługa snackbarów
 - `content` – główna zawartość ekranu (przyjmuje padding od Scaffolda)
+
 ---
 
-
-## ⭐ Często używane elementy UI
-
-W Jetpack Compose znajdziesz wiele gotowych composable, które pozwalają szybko budować nowoczesne interfejsy użytkownika. Oto najważniejsze i najczęściej wykorzystywane z nich:
+### Elementy UI
 
 - **Text**
   - Służy do wyświetlania tekstu.
@@ -435,21 +658,69 @@ W Jetpack Compose znajdziesz wiele gotowych composable, które pozwalają szybko
     Icon(Icons.Default.Home, contentDescription = "Strona główna")
     ```
 
-- **Divider**
-  - Linia podziału, np. między elementami listy.
+- **HorizontalDivider** / **VerticalDivider**
+  - Linia podziału, np. między elementami listy. W Material3 `Divider` jest przestarzały — zastępuje go `HorizontalDivider`.
   - Najważniejsze parametry:
     - `modifier`
     - `color`
     - `thickness`
   - Przykład:
     ```kotlin
-    Divider(color = Color.Gray, thickness = 1.dp)
+    HorizontalDivider(color = Color.Gray, thickness = 1.dp)
     ```
 
 
 ---
 
-## 👁️ Podgląd funkcji kompozycyjnych (Preview)
+## Slots API — przekazywanie zawartości przez lambdy
+
+**Slots API** to wzorzec projektowy w Jetpack Compose polegający na przekazywaniu funkcji kompozycyjnych jako parametrów (`@Composable` lambda). Zamiast definiować sztywną zawartość kontenera, wywołujący dostarcza własną treść do wyznaczonych "slotów".
+
+Jest to mechanizm leżący u podstaw wszystkich standardowych kontenerów Compose — `Card`, `Column`, `Button`, `Scaffold` i inne przyjmują swoje dzieci właśnie w ten sposób.
+
+### Przykład
+
+```kotlin
+// Definicja funkcji ze slotem
+@Composable
+fun InfoCard(
+    title: String,
+    modifier: Modifier = Modifier,
+    content: @Composable () -> Unit          // slot — wywołujący dostarcza zawartość
+) {
+    Card(modifier = modifier.fillMaxWidth()) {
+        Column(modifier = Modifier.padding(16.dp)) {
+            Text(text = title, style = MaterialTheme.typography.titleMedium)
+            Spacer(modifier = Modifier.height(8.dp))
+            content()                        // miejsce, w którym zostanie umieszczona treść
+        }
+    }
+}
+
+// Użycie — wywołujący decyduje, co trafi do slotu
+InfoCard(title = "Ważna informacja") {
+    Text("Treść karty zdefiniowana przez wywołującego.")
+    Button(onClick = { }) { Text("Akcja") }
+}
+```
+
+### Wiele slotów
+
+Funkcja może mieć kilka slotów, jak np. `Scaffold`:
+
+```kotlin
+Scaffold(
+    topBar = { TopAppBar(title = { Text("Tytuł") }) },   // slot nagłówka
+    floatingActionButton = { FloatingActionButton(onClick = {}) { } },  // slot FAB
+    content = { padding -> /* główna treść */ }           // slot zawartości
+)
+```
+
+Slots API umożliwia tworzenie elastycznych, wielokrotnego użytku kontenerów, których wygląd i zachowanie są definiowane przez wywołującego.
+
+---
+
+## Podgląd funkcji kompozycyjnych (Preview)
 
 Jetpack Compose umożliwia szybki podgląd UI bez uruchamiania aplikacji na emulatorze lub urządzeniu.
 
@@ -469,13 +740,14 @@ fun GreetingPreview() {
 ### Najważniejsze parametry adnotacji `@Preview`
 
 - **`name`** – nazwa podglądu wyświetlana w Android Studio (przydatne, gdy masz kilka podglądów).
-- **`showBackground`** – czy pokazać tło wokół composable (domyślnie `false`). Ustaw na `true`, by lepiej widzieć kształt i marginesy elementu.
+- **`showBackground`** – czy pokazać tło wokół funkcji kompozycyjnej (domyślnie `false`). Wartość `true` pozwala lepiej zobaczyć kształt i marginesy elementu.
 - **`backgroundColor`** – kolor tła podglądu w formacie ARGB (np. `0xFFFF0000` dla czerwonego). Działa tylko, gdy `showBackground = true`.
 - **`widthDp`** i **`heightDp`** – wymusza rozmiar podglądu w dp (przydatne do testowania responsywności).
 - **`group`** – pozwala grupować kilka podglądów razem (np. różne warianty kolorystyczne).
 - **`uiMode`** – pozwala wymusić tryb jasny/ciemny (`Configuration.UI_MODE_NIGHT_YES` lub `NO`).
 - **`locale`** – pozwala wymusić język/region (np. `"pl"` dla polskiego, `"en"` dla angielskiego).
 - **`fontScale`** – pozwala przetestować UI przy różnych rozmiarach czcionek (np. `1.5f`).
+- **`showSystemUi`** – wyświetla podgląd w otoczeniu pełnego UI systemowego (pasek statusu, pasek nawigacji). Przydatne do testowania układów pełnoekranowych.
 
 **Przykłady:**
 ```kotlin
@@ -492,24 +764,115 @@ fun PolishPreview() {
 }
 ```
 > **Wskazówka:**  
-> Możesz mieć wiele podglądów dla jednej funkcji, by szybko sprawdzić różne warianty (np. tryb ciemny, różne języki, rozmiary ekranu).
+> Dla jednej funkcji można zdefiniować wiele podglądów, co pozwala szybko weryfikować różne warianty (np. tryb ciemny, różne języki, rozmiary ekranu).
 > 
 Podgląd w Compose znacznie przyspiesza pracę nad UI, pozwala testować różne warianty i szybciej wychwytywać błędy wizualne.
 
 
 ---
 
-## 🧠 Dobre praktyki
+---
 
-- Dziel UI na małe, wielokrotnego użytku composable.
-- Przekazuj stan i obsługę zdarzeń przez parametry (state hoisting).
-- Zawsze przyjmuj `Modifier` jako pierwszy parametr domyślny.
-- Korzystaj z podglądu (`@Preview`) do szybkiego testowania wyglądu.
+## Animacje
 
+Jetpack Compose udostępnia wbudowane API animacji, które pozwala płynnie reagować na zmiany stanu bez ręcznego zarządzania `Animator` czy `ValueAnimator`.
+
+### `animate*AsState`
+
+Animuje pojedynczą wartość (kolor, rozmiar, pozycję) przy każdej jej zmianie. Wystarczy zastąpić bezpośrednią wartość wywołaniem `animate*AsState`.
+
+```kotlin
+var expanded by remember { mutableStateOf(false) }
+val targetHeight by animateDpAsState(
+    targetValue = if (expanded) 200.dp else 60.dp,
+    label = "height"
+)
+
+Box(modifier = Modifier.fillMaxWidth().height(targetHeight).background(Color.Blue)) {
+    Button(onClick = { expanded = !expanded }) {
+        Text(if (expanded) "Zwiń" else "Rozwiń")
+    }
+}
+```
+
+Dostępne warianty: `animateDpAsState`, `animateFloatAsState`, `animateColorAsState`, `animateIntAsState` i inne.
+
+### `rememberInfiniteTransition`
+
+Służy do tworzenia animacji działających w sposób ciągły — bez końca, niezależnie od zmian stanu. Typowe zastosowania to efekty pulsowania, migania, obracania lub płynnego przechodzenia kolorów.
+
+```kotlin
+val infiniteTransition = rememberInfiniteTransition(label = "infinite")
+
+val alpha by infiniteTransition.animateFloat(
+    initialValue = 1f,
+    targetValue = 0.2f,
+    animationSpec = infiniteRepeatable(
+        animation = tween(durationMillis = 800),
+        repeatMode = RepeatMode.Reverse       // wraca do wartości początkowej
+    ),
+    label = "alpha"
+)
+
+Box(
+    modifier = Modifier
+        .size(64.dp)
+        .background(MaterialTheme.colorScheme.primary.copy(alpha = alpha))
+)
+```
+
+Dostępne metody `InfiniteTransition`: `animateFloat`, `animateColor`, `animateValue`.
+
+### `AnimatedVisibility`
+
+Animuje pojawienie się i zniknięcie elementu UI.
+
+```kotlin
+var visible by remember { mutableStateOf(true) }
+
+AnimatedVisibility(visible = visible) {
+    Text("Ten tekst jest animowany")
+}
+
+Button(onClick = { visible = !visible }) {
+    Text("Przełącz")
+}
+```
+
+Domyślnie używa efektu fade + slide. Wejście i wyjście można dostosować przez parametry `enter` i `exit`.
+
+### `AnimatedContent`
+
+Animuje przejście między różnymi treściami w zależności od stanu.
+
+```kotlin
+var count by remember { mutableStateOf(0) }
+
+AnimatedContent(targetState = count) { targetCount ->
+    Text("Wartość: $targetCount")
+}
+```
+
+
+
+> Bardziej zaawansowane animacje (własne przejścia, `updateTransition`, animacje nawigacyjne) są poza zakresem tego rozdziału.
+> [Oficjalna dokumentacja animacji w Compose](https://developer.android.com/jetpack/compose/animation/introduction)
 
 ---
 
-## 📚 Dokumentacja
+## Dobre praktyki
+
+- **Nazewnictwo:** nazwy funkcji kompozycyjnych powinny być w stylu PascalCase i opisywać to, co wyświetlają — bez czasowników w trybie rozkazującym.
+- **Modifier jako parametr:** każda funkcja kompozycyjna powinna przyjmować `Modifier = Modifier` jako pierwszy parametr domyślny, aby wywołujący mógł swobodnie wpływać na jej wygląd i układ.
+- **Kolejność modyfikatorów:** ma znaczenie wizualne — `padding → background` daje inny efekt niż `background → padding`.
+- **State hoisting:** stan powinien być wynoszony na możliwie najwyższy wspólny poziom. Preferowane są bezstanowe (stateless) funkcje kompozycyjne, które otrzymują dane i callbacki z zewnątrz.
+- **Slots API:** kontenery wielokrotnego użytku powinny przyjmować zawartość przez lambdy `@Composable`, co zwiększa ich elastyczność.
+- **Podział na małe funkcje:** duże ekrany należy dzielić na mniejsze, wyspecjalizowane funkcje kompozycyjne, co ułatwia czytanie, testowanie i ponowne wykorzystanie kodu.
+- **Podgląd (`@Preview`):** warto definiować wiele podglądów dla jednej funkcji (tryb ciemny, różne rozmiary, różne języki), aby szybko wychwytywać błędy wizualne bez uruchamiania aplikacji.
+- **Animacje oparte na stanie:** do animowania zmian w UI należy używać `animate*AsState` i `AnimatedVisibility` zamiast ręcznego zarządzania wartościami; ciągłe animacje realizuje się przez `rememberInfiniteTransition`.
+
+
+## Dokumentacja
 
 - [Oficjalna dokumentacja Jetpack Compose – Composables](https://developer.android.com/jetpack/compose/composables)
 - [Compose Pathway – podstawy Compose](https://developer.android.com/jetpack/compose/tutorial)
