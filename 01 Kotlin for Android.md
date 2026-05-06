@@ -1,59 +1,59 @@
-# 🚀 Podstawy języka Kotlin dla Androida
+# Podstawy języka Kotlin dla Androida
 
 Kotlin to nowoczesny, statycznie typowany język programowania, oficjalnie wspierany przez Google do tworzenia aplikacji na Androida. Jest czytelny, zwięzły i w pełni interoperacyjny z Javą.
 
 ---
 
-## 🔹 Najważniejsze cechy Kotlin
+##  Najważniejsze cechy Kotlina
 
 - **Zwięzłość** – mniej kodu niż w Javie, brak zbędnych getterów/setterów.
-- **Bezpieczeństwo względem nulli** – system typów zapobiega wielu błędom z `null`.
+- **Bezpieczeństwo względem wartości null** – system typów zapobiega wielu błędom z `null`.
 - **Funkcje wyższego rzędu i lambdy** – łatwe przekazywanie funkcji jako parametrów.
 - **Rozszerzenia** – możliwość dodawania nowych funkcji do istniejących klas.
-- **Współpraca z Javą** – możesz używać bibliotek Java i stopniowo migrować kod.
+- **Współpraca z Javą** – można korzystać z bibliotek Java i stopniowo migrować kod.
 
 ---
 
-## 📦 Podstawowa składnia Kotlin
+##  Podstawowa składnia Kotlina
 
 ### Zmienne i stałe
 
-W Kotlinie do przechowywania danych używasz dwóch słów kluczowych: `val` i `var`.
+W Kotlinie do przechowywania danych używa się dwóch słów kluczowych: `val` i `var`.
 
-- **val** – służy do deklarowania stałych (wartość nie może być zmieniona po przypisaniu). Odpowiada to zmiennym tylko do odczytu (readonly).
+- **val** – służy do deklarowania stałych (wartość nie może być zmieniona po przypisaniu). Odpowiada to zmiennym tylko do odczytu (read-only).
 - **var** – służy do deklarowania zmiennych (wartość można zmieniać dowolnie w trakcie działania programu).
 
 **Przykłady:**
 
   ```kotlin
     val pi = 3.14           // stała, nie można przypisać nowej wartości
-    var licznik = 0         // zmienna, można zmieniać wartość
+    var counter = 0         // zmienna, można zmieniać wartość
 
-    licznik = 5             // OK
+    counter = 5             // OK
     // pi = 3.1415          // Błąd kompilacji!
   ```
 
-- Typ zmiennej jest zazwyczaj domniemywany automatycznie, ale możesz go podać jawnie:
+- Typ zmiennej jest zazwyczaj domniemywany automatycznie, ale można go podać jawnie:
   ```kotlin
-  val nazwa: String = "Android"
-  var wiek: Int = 20
+  val name: String = "Android"
+  var age: Int = 20
   ```
 
-- Możesz zadeklarować zmienną bez inicjalizacji, ale wtedy musisz podać typ:
+- Można zadeklarować zmienną bez inicjalizacji, ale wtedy należy podać typ:
   ```kotlin
-  var wynik: Int
-  wynik = 42
+  var result: Int
+  result = 42
   ```
 
 **Dobre praktyki:**
-- Używaj `val` zawsze, gdy nie musisz zmieniać wartości – kod jest wtedy bezpieczniejszy i bardziej czytelny.
-- Używaj `var` tylko wtedy, gdy wartość zmiennej faktycznie się zmienia.
+- Warto używać `val` zawsze, gdy wartość się nie zmienia – kod jest wtedy bezpieczniejszy i bardziej czytelny.
+- Warto używać `var` tylko wtedy, gdy wartość zmiennej faktycznie się zmienia.
 
 Zmienne i stałe w Kotlinie są podstawą do pracy z danymi w aplikacjach Android.
 
 ---
 
-## 🔹 Podstawowe typy danych
+## Podstawowe typy danych
 
 - `Int`, `Long`, `Double`, `Float` – liczby
 - `Boolean` – wartości logiczne (`true`/`false`)
@@ -62,21 +62,21 @@ Zmienne i stałe w Kotlinie są podstawą do pracy z danymi w aplikacjach Androi
 - `List`, `MutableList`, `Set`, `Map` – kolekcje
 
 ```kotlin
-val liczba: Int = 42
-val tekst: String = "Hello"
-val lista: List<String> = listOf("A", "B", "C")
+val number: Int = 42
+val text: String = "Hello"
+val list: List<String> = listOf("A", "B", "C")
 ```
 
 ---
 
-## 🔸 Wyrażenia warunkowe
+## Wyrażenia warunkowe
 
 - **if / else** – jak w Javie, ale może być też wyrażeniem (zwraca wartość)
 - **when** – rozbudowana wersja switch
 
 ```kotlin
 val x = 10
-val wynik = if (x > 5) "duże" else "małe"
+val result = if (x > 5) "duże" else "małe"
 
 when (x) {
     1 -> println("jeden")
@@ -87,25 +87,61 @@ when (x) {
 
 ---
 
-## 🔸 Obsługa stringów
+## Inteligentne rzutowanie i operator `is`
 
-- **Łączenie:** Możesz łączyć napisy za pomocą operatora `+`:
+Operator `is` służy do sprawdzania typu obiektu w czasie działania programu. Kotlin automatycznie rzutuje zmienną na odpowiedni typ po takim sprawdzeniu — mechanizm ten nosi nazwę **smart cast**.
+
+- **Sprawdzenie typu:**
   ```kotlin
-  val imie = "Jan"
-  val powitanie = "Cześć, " + imie + "!"
+  val obiekt: Any = "Hello"
+  if (obiekt is String) {
+      println(obiekt.length) // obiekt jest automatycznie traktowany jako String
+  }
+  ```
+
+- **Negacja z `!is`:**
+  ```kotlin
+  if (obiekt !is Int) {
+      println("To nie jest liczba całkowita")
+  }
+  ```
+
+- **Smart cast w `when`:**
+  Operator `is` szczególnie dobrze współpracuje z wyrażeniem `when`:
+  ```kotlin
+  fun opisTypu(x: Any): String = when (x) {
+      is Int     -> "Liczba całkowita: $x"
+      is String  -> "Tekst o długości ${x.length}"
+      is Boolean -> "Wartość logiczna: $x"
+      else       -> "Nieznany typ"
+  }
+  println(opisTypu(42))       // Liczba całkowita: 42
+  println(opisTypu("Cześć")) // Tekst o długości 5
+  ```
+
+**Uwaga:** Smart cast działa tylko wtedy, gdy kompilator może zagwarantować, że zmienna nie zmieni wartości między sprawdzeniem a użyciem (dotyczy to np. zmiennych `val` lub lokalnych `var`).
+
+---
+
+## Obsługa stringów
+
+- **Łączenie:** Napisy można łączyć za pomocą operatora `+`:
+  ```kotlin
+  val name = "Jan"
+  val greeting = "Ćześć, " + name + "!"
   ```
 
 - **Interpolacja:** Najczęściej używany sposób – wstawianie wartości zmiennych bezpośrednio do tekstu za pomocą `$`:
   ```kotlin
-  val imie = "Jan"
-  val powitanie = "Cześć, $imie!"
-  val wiek = 20
-  val info = "Masz ${wiek + 1} lat"
+  val name = "Jan"
+  val greeting = "Ćześć, $name!"
+  val age = 20
+  val info = "Masz ${age + 1} lat"
   ```
 
-- **Wielolinijkowe stringi:** Użyj potrójnych cudzysłowów `""" ... """` do tworzenia tekstów zawierających wiele linii lub znaki specjalne bez konieczności ich uciekania:
+- **Wielolinijkowe stringi:** Do tworzenia tekstów zawierających wiele linii lub znaki specjalne bez konieczności ich uciekania, używa się potrójnych cudzysłowów `""" ... """`:
   ```kotlin
-  val wielolinijkowy = """
+  val multiline = """
       To jest
       tekst w kilku liniach
       Znak tabulacji:	<- tutaj
@@ -113,13 +149,13 @@ when (x) {
   ```
 
 - **Podstawowe operacje na stringach:**
-  - `length` – długość tekstu: `val dlugosc = tekst.length`
-  - `uppercase()`, `lowercase()` – zmiana wielkości liter: `tekst.uppercase()`
-  - `substring()` – wycinanie fragmentu: `tekst.substring(0, 3)`
-  - `replace()` – zamiana fragmentu: `tekst.replace("a", "b")`
-  - `contains()` – sprawdzenie, czy tekst zawiera podciąg: `tekst.contains("kot")`
+  - `length` – długość tekstu: `val length = text.length`
+  - `uppercase()`, `lowercase()` – zmiana wielkości liter: `text.uppercase()`
+  - `substring()` – wycinanie fragmentu: `text.substring(0, 3)`
+  - `replace()` – zamiana fragmentu: `text.replace("a", "b")`
+  - `contains()` – sprawdzenie, czy tekst zawiera podciąg: `text.contains("kot")`
   - `split()` – dzielenie na części: `"a,b,c".split(",")`
-  - `trim()` – usuwanie białych znaków z początku i końca: `tekst.trim()`
+  - `trim()` – usuwanie białych znaków z początku i końca: `text.trim()`
 
 - **Porównywanie stringów:**
   - Standardowe porównanie: `a == b`
@@ -127,13 +163,13 @@ when (x) {
 
 - **Konwersja innych typów do stringa:**
   ```kotlin
-  val liczba = 123
-  val tekst = liczba.toString()
+  val number = 123
+  val text = number.toString()
   ```
 
 ---
 
-## 🔸 Pętle
+## Pętle
 
 W Kotlinie można korzystać z różnych rodzajów pętli, a także z wygodnych zakresów (range):
 
@@ -155,18 +191,18 @@ W Kotlinie można korzystać z różnych rodzajów pętli, a także z wygodnych 
 
 - **Pętla for po kolekcji:**
   ```kotlin
-  val lista = listOf("A", "B", "C")
-  for (element in lista) {
+  val list = listOf("A", "B", "C")
+  for (element in list) {
       println(element)
   }
   ```
 
 - **Pętla while:**
   ```kotlin
-  var licznik = 0
-  while (licznik < 3) {
-      println(licznik)
-      licznik++
+  var counter = 0
+  while (counter < 3) {
+      println(counter)
+      counter++
   }
   ```
 
@@ -178,91 +214,101 @@ W Kotlinie można korzystać z różnych rodzajów pętli, a także z wygodnych 
 
 **Przykład użycia zakresu w warunku:**
 ```kotlin
-val wiek = 18
-if (wiek in 13..19) {
+val age = 18
+if (age in 13..19) {
     println("Nastolatek")
 }
 ```
 ---
 
 
-### Funkcje
+## Funkcje
 
 Funkcje w Kotlinie są podstawowym sposobem organizacji kodu. Pozwalają na wielokrotne użycie logiki, przekazywanie parametrów i zwracanie wartości.
 
 ```kotlin
-fun dodaj(a: Int, b: Int): Int {
+fun add(a: Int, b: Int): Int {
     return a + b
 }
 
 // Funkcja jako wyrażenie (skrótowa forma):
-fun powitaj(imie: String) = "Cześć, $imie!"
+fun greet(name: String) = "Ćześć, $name!"
 ```
 
-#### Rodzaje argumentów funkcji
+### Rodzaje argumentów funkcji
 
-- **Argumenty domyślne:** Możesz przypisać domyślną wartość do parametru.
+- **Argumenty domyślne:** Parametrom można przypisać domyślną wartość.
   ```kotlin
-  fun powitanie(imie: String = "Gość") {
-      println("Cześć, $imie!")
+  fun greet(name: String = "Gość") {
+      println("Ćześć, $name!")
   }
-  powitanie() // Cześć, Gość!
-  powitanie("Anna") // Cześć, Anna!
+  greet() // Ćześć, Gość!
+  greet("Anna") // Ćześć, Anna!
   ```
 
-- **Argumenty nazwane:** Możesz przekazywać argumenty po nazwie, co zwiększa czytelność. Nie trzeba też przejmować się kolejnoscią argumentów. 
+- **Argumenty nazwane:** Argumenty można przekazywać po nazwie, co zwiększa czytelność. Nie trzeba też przejmować się kolejnością argumentów.
   ```kotlin
-  fun zamow(nazwa: String, ilosc: Int, pilne: Boolean = false) { /* ... */ }
-  zamow(nazwa = "Kawa", ilosc = 2, pilne = true)
+  fun order(name: String, quantity: Int, urgent: Boolean = false) { /* ... */ }
+  order(name = "Kawa", quantity = 2, urgent = true)
   ```
 
 - **Argumenty vararg:** Pozwalają przekazać dowolną liczbę argumentów tego samego typu.
   ```kotlin
-  fun suma(vararg liczby: Int): Int = liczby.sum()
-  val wynik = suma(1, 2, 3, 4) // 10
+  fun sum(vararg numbers: Int): Int = numbers.sum()
+  val result = sum(1, 2, 3, 4) // 10
   ```
 
-#### Nazewnictwo funkcji
+### Nazewnictwo funkcji
 
-- Nazwy funkcji powinny być czasownikami w trybie oznajmującym, np. `dodaj`, `wyslijEmail`, `pobierzDane`.
+- Nazwy funkcji powinny być czasownikami w trybie oznajmującym, np. `add`, `sendEmail`, `fetchData`.
 - Funkcje zwracające wartość logiczną często zaczynają się od `is`, `has`, `can`, np. `isActive()`, `hasPermission()`, `canEdit()`.
 - Nazwy powinny być krótkie, ale opisowe.
 
 ---
 
-### Funkcje lambda
+##  Funkcje lambda
 
 
-Funkcje lambda to krótkie, anonimowe funkcje, które możesz przypisać do zmiennej lub przekazać jako argument do innej funkcji.
+Funkcje lambda to krótkie, anonimowe funkcje, które można przypisać do zmiennej lub przekazać jako argument do innej funkcji.
 - **Podstawowa składnia funkcji lambda**:
 
     ```kotlin
-    { parametry -> ciało }
-    { x: Int -> x*2 }
+    { parametry -> ciało }   // ogólna składnia
+    { x: Int -> x * 2 }      // przykład: lambda podwajająca liczbę
     ```
 
 - **Lambda bez parametrów:**
   ```kotlin
-  val powitanie = { println("Cześć!") }
-  powitanie() // wypisze: Cześć!
+  val greeting = { println("Ćześć!") }
+  greeting() // wypiśe: Ćześć!
   ```
 
 - **Lambda z jednym parametrem:**
   ```kotlin
-  val podwoj = { x: Int -> x * 2 }
-  println(podwoj(5)) // wypisze: 10
+  val double = { x: Int -> x * 2 }
+  println(double(5)) // wypiśe: 10
   ```
 
 - **Lambda jako argument funkcji:**
   ```kotlin
-  fun wykonaj(akcja: () -> Unit) {
-      akcja()
+  fun execute(action: () -> Unit) {
+      action()
   }
 
-  wykonaj { println("To jest lambda!") }
+  execute { println("To jest lambda!") }
   ```
 
-### Kolekcje
+- **Domyślny parametr `it`:** gdy lambda przyjmuje dokładnie jeden parametr i nie nadano mu jawnej nazwy, można odwołać się do niego przez `it`:
+  ```kotlin
+  val double = { x: Int -> x * 2 }   // jawna nazwa parametru: x
+  val double2: (Int) -> Int = { it * 2 } // to samo, z użyciem it
+
+  val numbers = listOf(1, 2, 3, 4)
+  val even = numbers.filter { it % 2 == 0 }  // it = bieżący element listy
+  val doubled = numbers.map { it * 2 }        // it = bieżący element listy
+  ```
+
+## Kolekcje
 
 Kotlin oferuje wygodne i bezpieczne kolekcje, które są szeroko wykorzystywane w aplikacjach Android. Najczęściej używane typy kolekcji to:
 
@@ -273,112 +319,222 @@ Kotlin oferuje wygodne i bezpieczne kolekcje, które są szeroko wykorzystywane 
 
 **Przykłady deklaracji:**
 ```kotlin
-val lista = listOf("A", "B", "C")                // niemutowalna lista
-val mutableList = mutableListOf(1, 2, 3)         // mutowalna lista
-val zbior = setOf("kot", "pies", "kot")          // zbiór (duplikaty ignorowane)
-val mapa = mapOf("klucz" to 1, "drugi" to 2)     // mapa tylko do odczytu
+val list = listOf("A", "B", "C")                  // niemutowalna lista
+val mutableList = mutableListOf(1, 2, 3)          // mutowalna lista
+val set = setOf("kot", "pies", "kot")             // zbiór (duplikaty ignorowane)
+val map = mapOf("klucz" to 1, "drugi" to 2)       // mapa tylko do odczytu
 val mutableMap = mutableMapOf("a" to 1, "b" to 2)
 ```
 
 **Podstawowe operacje na kolekcjach:**
-- Odczyt elementu z listy: `lista[0]`
+- Odczyt elementu z listy: `list[0]`
 - Dodanie elementu do mutowalnej listy: `mutableList.add(4)`
 - Usunięcie elementu: `mutableList.remove(2)`
-- Sprawdzenie, czy lista zawiera element: `lista.contains("A")`
+- Sprawdzenie, czy lista zawiera element: `list.contains("A")`
 - Iteracja po kolekcji:
   ```kotlin
-  for (element in lista) {
+  for (element in list) {
       println(element)
   }
   ```
 
 **Wyrażenia lambda i kolekcje:**
-Kotlin pozwala na wygodne przetwarzanie kolekcji za pomocą funkcji wyższego rzędu i lambd, np.:
-```kotlin
-val liczby = listOf(1, 2, 3, 4, 5)
-val parzyste = liczby.filter { it % 2 == 0 }      // [2, 4]
-val podwojone = liczby.map { it * 2 }             // [2, 4, 6, 8, 10]
-val suma = liczby.sum()                           // 15
-```
+Kotlin pozwala na wygodne przetwarzanie kolekcji za pomocą funkcji wyższego rzędu i lambd. Poniżej najczęściej używane funkcje:
 
-**Przykład praktyczny:**
-```kotlin
-val produkty = listOf("Kawa", "Herbata", "Sok")
-produkty.forEach { produkt ->
-    println("Produkt: $produkt")
-}
-```
+- **`filter`** — zwraca nową kolekcję zawierającą tylko elementy spełniające warunek.
+  Przekazywana lambda przyjmuje jeden argument (element kolekcji, domyślnie `it`) i musi zwracać `Boolean`:
+  ```kotlin
+  // składnia ogólna:
+  kolekcja.filter { element -> warunek_zwracający_Boolean }
+
+  val numbers = listOf(1, 2, 3, 4, 5, 6)
+  val even = numbers.filter { it % 2 == 0 }           // [2, 4, 6]
+
+  data class Product(val name: String, val price: Double)
+  val products = listOf(Product("Sok", 3.99), Product("Kawa", 12.99), Product("Herbata", 6.49))
+  val cheap = products.filter { it.price < 7.0 }      // [Sok, Herbata]
+  ```
+
+- **`map`** — przekształca każdy element kolekcji i zwraca nową listę wyników.
+  Lambda przyjmuje element i zwraca dowolną wartość — typ wynikowej listy zależy od tego, co lambda zwraca:
+  ```kotlin
+  // składnia ogólna:
+  kolekcja.map { element -> przekształcona_wartość }
+
+  val numbers = listOf(1, 2, 3, 4, 5)
+  val doubled = numbers.map { it * 2 }                // [2, 4, 6, 8, 10]
+
+  // map może zmienić też typ elementów:
+  val products = listOf(Product("Sok", 3.99), Product("Kawa", 12.99))
+  val names = products.map { it.name }                // ["Sok", "Kawa"]  (List<String>)
+  val prices = products.map { it.price }              // [3.99, 12.99]    (List<Double>)
+  ```
+
+- **`forEach`** — wykonuje operację dla każdego elementu (nie zwraca wartości):
+  ```kotlin
+  val products = listOf("Kawa", "Herbata", "Sok")
+  products.forEach { println("Produkt: $it") }
+  ```
+
+- **`any` / `all` / `none`** — sprawdzają, czy warunek jest spełniony:
+  ```kotlin
+  val numbers = listOf(1, 2, 3, 4, 5)
+  println(numbers.any { it > 4 })   // true  — przynajmniej jeden > 4
+  println(numbers.all { it > 0 })   // true  — wszystkie > 0
+  println(numbers.none { it > 10 }) // true  — żaden nie > 10
+  ```
+
+- **`find` / `firstOrNull`** — zwraca pierwszy element spełniający warunek lub `null`:
+  ```kotlin
+  val numbers = listOf(1, 2, 3, 4, 5)
+  val first = numbers.find { it > 3 }       // 4
+  val missing = numbers.find { it > 10 }    // null
+  ```
+
+- **`sortedBy` / `sortedByDescending`** — sortuje kolekcję według wybranej właściwości.
+  Lambda zwraca klucz sortowania (wartość porównywalną, np. `Int`, `String`, `Double`):
+  ```kotlin
+  // składnia ogólna:
+  kolekcja.sortedBy { element -> klucz_sortowania }
+
+  data class Product(val name: String, val price: Double)
+  val products = listOf(Product("Sok", 3.99), Product("Kawa", 12.99), Product("Herbata", 6.49))
+
+  val byPrice = products.sortedBy { it.price }
+  // [Sok(3.99), Herbata(6.49), Kawa(12.99)]
+
+  val byName = products.sortedBy { it.name }
+  // [Herbata, Kawa, Sok]  (alfabetycznie)
+
+  val byPriceDesc = products.sortedByDescending { it.price }
+  // [Kawa(12.99), Herbata(6.49), Sok(3.99)]
+  ```
+
+- **`groupBy`** — grupuje elementy według klucza, zwraca `Map<K, List<V>>`.
+  Lambda zwraca klucz grupowania — wszystkie elementy z tym samym kluczem trafiają do jednej listy:
+  ```kotlin
+  // składnia ogólna:
+  kolekcja.groupBy { element -> klucz_grupy }   // → Map<TypKlucza, List<TypElementu>>
+
+  data class Product(val name: String, val category: String, val price: Double)
+  val products = listOf(
+      Product("Kawa", "napój", 12.99),
+      Product("Herbata", "napój", 6.49),
+      Product("Chleb", "pieczywo", 4.99),
+      Product("Bułka", "pieczywo", 1.50)
+  )
+
+  val byCategory = products.groupBy { it.category }
+  // { "napój" -> [Kawa, Herbata], "pieczywo" -> [Chleb, Bułka] }
+
+  // dostęp do konkretnej grupy:
+  val drinks = byCategory["napój"]   // [Kawa, Herbata]
+  ```
+
+- **`reduce` / `fold`** — redukuje kolekcję do jednej wartości, przetwarzając elementy po kolei.
+  Lambda przyjmuje dwa argumenty: **akumulator** (`acc` — wynik dotychczasowego przetwarzania) oraz **bieżący element** (`n`).
+  - `reduce` — wartość startowa akumulatora to pierwszy element kolekcji
+  - `fold` — wartość startową akumulatora podaje się jawnie jako argument; działa też na pustej kolekcji
+  ```kotlin
+  // składnia ogólna:
+  kolekcja.reduce { acc, element -> nowa_wartość_akumulatora }
+  kolekcja.fold(wartość_startowa) { acc, element -> nowa_wartość_akumulatora }
+
+  val numbers = listOf(1, 2, 3, 4, 5)
+
+  // reduce: acc zaczyna od 1, potem: 1+2=3, 3+3=6, 6+4=10, 10+5=15
+  val sum = numbers.reduce { acc, n -> acc + n }           // 15
+
+  // fold: acc zaczyna od 100, potem: 100+1=101, ..., 110+5=115
+  val sumFrom100 = numbers.fold(100) { acc, n -> acc + n } // 115
+
+  // fold do budowania stringa:
+  val text = numbers.fold("Liczby:") { acc, n -> "$acc $n" }
+  // "Liczby: 1 2 3 4 5"
+  ```
+
+- **Łączenie operacji w łańcuch:**
+  ```kotlin
+  val numbers = listOf(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
+  val result = numbers
+      .filter { it % 2 == 0 }   // [2, 4, 6, 8, 10]
+      .map { it * it }           // [4, 16, 36, 64, 100]
+      .sum()                     // 220
+  ```
 
 **Wskazówki:**
-- Domyślnie kolekcje są niemutowalne - jeśli musisz modyfikować kolekcję, użyj typu `MutableList`, `MutableSet` lub `MutableMap`.
+- Domyślnie kolekcje są niemutowalne — jeśli zachodzi potrzeba modyfikacji kolekcji, należy użyć typu `MutableList`, `MutableSet` lub `MutableMap`.
+- Operacje na kolekcjach (`filter`, `map` itp.) nie modyfikują oryginalnej kolekcji — zwracają nową.
 
 
-### Null safety
+## Null safety
 
 Null safety to jedna z najważniejszych cech języka Kotlin, która pomaga unikać błędów związanych z wartością `null` (tzw. NullPointerException).
 
 - **Domyślnie zmienne nie mogą być nullem:**
   ```kotlin
-  var tekst: String = "Hello"
-  tekst = null // Błąd kompilacji!
+  var text: String = "Hello"
+  text = null // Błąd kompilacji!
   ```
 
-- **Aby zmienna mogła przyjmować wartość null, dodaj znak zapytania do typu:**
+- **Aby zmienna mogła przyjmować wartość null, należy dodać znak zapytania do typu:**
   ```kotlin
-  var tekst: String? = null
-  tekst = "Cześć"
+  var text: String? = null
+  text = "Cześć"
   ```
 
 - **Bezpieczne wywołanie (safe call operator `?.`):**
   Pozwala wywołać metodę lub uzyskać właściwość tylko, jeśli obiekt nie jest nullem.
   ```kotlin
-  println(tekst?.length) // jeśli tekst == null, wynik to null, nie ma błędu
+  println(text?.length) // jeśli text == null, wynik to null, nie ma błędu
   ```
 
 - **Operator Elvis (`?:`):**
   Pozwala ustawić wartość domyślną, gdy zmienna jest nullem.
   ```kotlin
-  val dlugosc = tekst?.length ?: 0 // jeśli tekst == null, dlugosc = 0
+  val length = text?.length ?: 0 // jeśli text == null, length = 0
   ```
 
 - **Wymuszenie nie-null (`!!`):**
-  Rzuca wyjątek, jeśli zmienna jest nullem (używaj tylko, gdy masz pewność, że nie będzie null).
+  Rzuca wyjątek, jeśli zmienna jest nullem (należy stosować tylko wtedy, gdy mamy pewność, że obiekt nie jest null).
   ```kotlin
-  val dlugosc = tekst!!.length // jeśli tekst == null, aplikacja się wykrzaczy
+  val length = text!!.length // jeśli text == null, zostanie rzucony wyjątek NullPointerException
   ```
 
 - **Bezpieczne rzutowanie (`as?`):**
   Zwraca null, jeśli rzutowanie się nie powiedzie.
   ```kotlin
-  val liczba: Int? = "123".toIntOrNull()
+  val obj: Any = "tekst"
+  val text: String? = obj as? String  // "tekst"
+  val number: Int? = obj as? Int       // null (rzutowanie się nie powiodło)
   ```
 
 - **Przykład praktyczny:**
   ```kotlin
-  fun pokazDlugosc(tekst: String?) {
-      println("Długość: ${tekst?.length ?: "brak tekstu"}")
+  fun showLength(text: String?) {
+      println("Długość: ${text?.length ?: "brak tekstu"}")
   }
-  pokazDlugosc("Kotlin") // Długość: 6
-  pokazDlugosc(null)     // Długość: brak tekstu
+  showLength("Kotlin") // Długość: 6
+  showLength(null)     // Długość: brak tekstu
   ```
 
 **Wskazówki:**
-- Staraj się unikać zmiennych nullable, jeśli nie jest to konieczne.
+- Warto unikać zmiennych nullable, jeśli nie jest to konieczne.
 - Null safety sprawia, że kod jest bezpieczniejszy i łatwiejszy w utrzymaniu, co jest szczególnie ważne w aplikacjach Android.
 
 ---
 
-### Klasy
+## Klasy
 
 W Kotlinie klasy są podstawowym sposobem definiowania własnych typów danych.
 
-#### Nazewnictwo klas
+### Nazewnictwo klas
 
 - Nazwy klas w Kotlinie powinny być w stylu **PascalCase** – każde słowo zaczyna się wielką literą, bez podkreśleń, np. `User`, `MainActivity`, `ProductItem`.
 - Nazwa klasy powinna jasno opisywać, co reprezentuje dana klasa (np. `User`, `Order`, `LoginViewModel`).
-- Dla klas danych (`data class`) stosuj te same zasady – nazwa powinna być rzeczownikiem.
-- Unikaj skrótów i nieczytelnych nazw – kod powinien być samoopisujący się.
-- Dla obiektów singleton (`object`) i companion objectów również stosuj PascalCase, np. `Logger`, `DatabaseHelper`.
+- Dla klas danych (`data class`) należy stosować te same zasady – nazwa powinna być rzeczownikiem.
+- Zaleca się unikanie skrótów i nieczytelnych nazw – kod powinien być samoopisujący się.
+- Dla obiektów singleton (`object`) i obiektów companion również należy stosować PascalCase, np. `Logger`, `DatabaseHelper`.
 
 **Przykłady dobrego nazewnictwa:**
 ```kotlin
@@ -396,41 +552,41 @@ Dobre nazewnictwo klas ułatwia czytanie, testowanie i utrzymanie kodu w większ
 
 - **Zwykła klasa:**
   ```kotlin
-  class Osoba(val imie: String, var wiek: Int)
-  val jan = Osoba("Jan", 30)
-  println(jan.imie) // Jan
-  jan.wiek = 31
+  class Person(val name: String, var age: Int)
+  val jan = Person("Jan", 30)
+  println(jan.name) // Jan
+  jan.age = 31
   ```
 
 - **Klasa z metodami:**
   ```kotlin
-  class Kalkulator {
-      fun dodaj(a: Int, b: Int): Int = a + b
+  class Calculator {
+      fun add(a: Int, b: Int): Int = a + b
   }
-  val k = Kalkulator()
-  println(k.dodaj(2, 3)) // 5
+  val calc = Calculator()
+  println(calc.add(2, 3)) // 5
   ```
-#### Konstruktor klasy
+### Konstruktor klasy
 
 W Kotlinie konstruktor to specjalna funkcja, która służy do tworzenia obiektów danej klasy. Najczęściej używa się **konstruktora głównego** (primary constructor), który definiuje się bezpośrednio w nagłówku klasy:
 
 ```kotlin
-class Osoba(val imie: String, var wiek: Int)
+class Person(val name: String, var age: Int)
 ```
 - Parametry konstruktora mogą być od razu właściwościami klasy (z `val` lub `var`), jak w przykładzie powyżej.
 - Tworzenie obiektu:  
   ```kotlin
-  val jan = Osoba("Jan", 30)
+  val jan = Person("Jan", 30)
   ```
 
-Możesz też zdefiniować **konstruktor dodatkowy** (secondary constructor), jeśli potrzebujesz innego sposobu tworzenia obiektu:
+Można też zdefiniować **konstruktor dodatkowy** (secondary constructor), gdy potrzebny jest inny sposób tworzenia obiektu:
 
 ```kotlin
-class Osoba(val imie: String) {
-    var wiek: Int = 0
+class Person(val name: String) {
+    var age: Int = 0
 
-    constructor(imie: String, wiek: Int) : this(imie) {
-        this.wiek = wiek
+    constructor(name: String, age: Int) : this(name) {
+        this.age = age
     }
 }
 ```
@@ -438,49 +594,67 @@ class Osoba(val imie: String) {
 - Konstruktor dodatkowy używa słowa kluczowego `constructor` i zawsze musi wywołać konstruktor główny (`: this(...)`).
 
 **Ważne:**
-- Jeśli klasa nie ma żadnych właściwości ani metod, możesz pominąć nawiasy:
+- Jeśli klasa nie ma żadnych właściwości ani metod, można pominąć nawiasy:
   ```kotlin
   class Pusta
   ```
-- Jeśli chcesz wykonać dodatkową logikę podczas tworzenia obiektu, możesz użyć bloku `init`:
+- Jeśli potrzebna jest dodatkowa logika podczas tworzenia obiektu, można użyć bloku `init`:
   ```kotlin
-  class Osoba(val imie: String) {
+  class Person(val name: String) {
       init {
-          println("Tworzę osobę o imieniu $imie")
+          println("Tworzę osobę o imieniu $name")
       }
   }
   ```
 
-### Dziedziczenie
+## Dziedziczenie
 
-W Kotlinie możesz tworzyć hierarchie klas i korzystać z dziedziczenia, aby ponownie wykorzystywać kod i rozszerzać funkcjonalność.
+W Kotlinie można tworzyć hierarchie klas i korzystać z dziedziczenia, aby ponownie wykorzystywać kod i rozszerzać funkcjonalność.
 
-- Domyślnie każda klasa w Kotlinie jest **finalna** (nie można po niej dziedziczyć). Aby umożliwić dziedziczenie, użyj słowa kluczowego `open` przy definicji klasy i metod.
+- Domyślnie każda klasa w Kotlinie jest **finalna** (nie można po niej dziedziczyć). Aby umożliwić dziedziczenie, należy użyć słowa kluczowego `open` przy definicji klasy i metod.
 
 **Przykład dziedziczenia:**
 ```kotlin
-open class Zwierze(val imie: String) {
-    open fun dajGlos() {
+open class Animal(val name: String) {
+    open fun makeSound() {
         println("Zwierzę wydaje dźwięk")
     }
 }
 
-class Pies(imie: String) : Zwierze(imie) {
-    override fun dajGlos() {
+class Dog(name: String) : Animal(name) {
+    override fun makeSound() {
         println("Hau hau!")
     }
 }
 
-val pies = Pies("Reksio")
-pies.dajGlos() // Hau hau!
+val dog = Dog("Reksio")
+dog.makeSound() // Hau hau!
 ```
 
 - **open** – pozwala na dziedziczenie po klasie lub nadpisywanie metody.
 - **override** – służy do nadpisywania metod z klasy bazowej.
-- Konstruktor klasy pochodnej wywołuje konstruktor klasy bazowej za pomocą `: Bazowa(...)`.
+- Konstruktor klasy pochodnej wywołuje konstruktor klasy bazowej za pomocą `: Base(...)`.
 
-**Interfejsy a dziedziczenie:**
+### Słowa kluczowe: `this` i `super`
 
+- **`this`** — odwołanie do bieżącego obiektu (instancji klasy). Używane w ciele klasy do odwołania się do jej własnych właściwości i metod, a także w funkcjach zakresu (`apply`, `run`, `with`), gdzie odwołuje się do obiektu, na którym blok jest wykonywany:
+  ```kotlin
+  class Person(val name: String) {
+      fun greet() = "Cześć, jestem ${this.name}" // this można tu pominąć
+  }
+  ```
+
+- **`super`** — odwołanie do klasy bazowej (nadklasy). Pozwala wywołać metodę lub konstruktor rodzica, gdy klasa pochodna go nadpisuje:
+  ```kotlin
+  class Dog(name: String) : Animal(name) {
+      override fun makeSound() {
+          super.makeSound()   // wywołanie implementacji z Animal
+          println("Hau hau!")
+      }
+  }
+  ```
+
+### Interfejsy
 
 Interfejsy w Kotlinie definiuje się za pomocą słowa kluczowego `interface`. Interfejs może zawierać deklaracje metod (bez implementacji) oraz domyślne implementacje metod.
 
@@ -489,88 +663,119 @@ Interfejsy w Kotlinie definiuje się za pomocą słowa kluczowego `interface`. I
 
 **Przykład prostego interfejsu:**
 ```kotlin
-interface Klikalne {
-    fun klik()
+interface Clickable {
+    fun click()
 }
 
-class Przycisk : Klikalne {
-    override fun klik() {
+class Button : Clickable {
+    override fun click() {
         println("Kliknięto przycisk")
     }
 }
 
-val przycisk = Przycisk()
-przycisk.klik() // Kliknięto przycisk
+val button = Button()
+button.click() // Kliknięto przycisk
 ```
 
 **Interfejs z domyślną implementacją:**
 ```kotlin
-interface Powitalne {
-    fun powitanie(imie: String) {
-        println("Cześć, $imie!")
+interface Greetable {
+    fun greet(name: String) {
+        println("Cześć, $name!")
     }
 }
 
-class Uzytkownik : Powitalne
+class User : Greetable
 
-val user = Uzytkownik()
-user.powitanie("Anna") // Cześć, Anna!
+val user = User()
+user.greet("Anna") // Cześć, Anna!
 ```
 
 **Implementacja wielu interfejsów:**
 ```kotlin
-interface Klikalne { fun klik() }
-interface Latajace { fun lec() }
+interface Clickable { fun click() }
+interface Flyable { fun fly() }
 
-class SuperPtak : Klikalne, Latajace {
-    override fun klik() { println("Ptak kliknięty") }
-    override fun lec() { println("Ptak leci") }
+class SuperBird : Clickable, Flyable {
+    override fun click() { println("Ptak kliknięty") }
+    override fun fly() { println("Ptak leci") }
 }
 ```
 
 **Ważne cechy interfejsów w Kotlinie:**
-- Interfejs może mieć właściwości (bez stanu), np. `val nazwa: String`
+- Interfejs może mieć właściwości (bez stanu), np. `val name: String`
 - Interfejs nie może przechowywać stanu (nie może mieć pól z wartościami)
-- Możesz implementować wiele interfejsów w jednej klasie
+- W jednej klasie można implementować wiele interfejsów
 
 Interfejsy są szeroko wykorzystywane w Androidzie, np. do obsługi zdarzeń (kliknięcia, callbacki), komunikacji między fragmentami, adapterami itp.
 
-## Klasy specjalne
+### Klasy abstrakcyjne
+
+Klasa abstrakcyjna (`abstract class`) to klasa, której nie można bezpośrednio instancjonować — służy jako szablon dla klas pochodnych. Może zawierać zarówno metody abstrakcyjne (bez implementacji), jak i metody z implementacją, a także pola przechowujące stan.
+
+```kotlin
+abstract class Shape {
+    // abstract — każda podklasa MUSI dostarczyć własną implementację;
+    // Shape nie wie, jak liczyć pole (inaczej robi to koło, prostokąt, trójkąt)
+    abstract fun area(): Double
+
+    // zwykła metoda z implementacją — wspólna dla wszystkich podklas, 
+    // ale można je też nadpisywać
+    fun describe() {
+        println("Pole powierzchni: ${area()}")
+    }
+}
+
+class Circle(val radius: Double) : Shape() {
+    override fun area() = Math.PI * radius * radius
+}
+
+class Square(val edge: Double) : Shape() {
+    override fun area() = edge * edge
+    override fun describe() {
+       super.describe() // dostęp do funkcji describe z klasy nadrzędnej
+       println("To jest kwadrat")
+    }
+}
+
+val circle = Circle(5.0)
+circle.describe() // Pole powierzchni: 78.53...
+
+val square = Square(5.0)
+square.describe()
+// Pole powierzchni: 25.0
+// To jest kwadrat
+```
+
+**Różnice między `abstract class` a `interface`:**
+
+| Cecha | `abstract class` | `interface` |
+|---|---|---|
+| Instancjonowanie | nie można | nie można |
+| Pola ze stanem | tak | nie |
+| Konstruktor | tak | nie |
+| Implementacja metod | tak — metody mogą być abstrakcyjne (bez ciała) lub konkretne (z ciałem) | tak — metody mogą mieć domyślną implementację, ale nie muszą; bez ciała klasa implementująca musi dostarczyć własną |
+| Dziedziczenie | tylko po jednej klasie | wiele interfejsów jednocześnie |
+
+**Kiedy stosować które rozwiązanie:**
+- `abstract class` — gdy klasy pochodne mają wspólny stan (pola) lub logikę bazową; gdy hierarchia klas reprezentuje relację „jest rodzajem" (np. `Circle` jest `Shape`)
+- `interface` — gdy zależy wyłącznie na zdefiniowaniu kontraktu (co klasa potrafi robić); gdy jedna klasa powinna spełniać wiele niezależnych kontraktów
+
+
+
+##  Klasy specjalne
 
 - **Data class** – specjalny typ klasy do przechowywania danych. Automatycznie generuje metody `equals()`, `hashCode()`, `toString()`, `copy()` i `componentN()`:
   ```kotlin
-  data class Produkt(val nazwa: String, val cena: Double)
-  val kawa = Produkt("Kawa", 12.99)
-  println(kawa) // Produkt(nazwa=Kawa, cena=12.99)
-  val nowaKawa = kawa.copy(cena = 10.99)
+  data class Product(val name: String, val price: Double)
+  val coffee = Product("Kawa", 12.99)
+  println(coffee) // Product(name=Kawa, price=12.99)
+  val cheaperCoffee = coffee.copy(price = 10.99)
   ```
 
-- **enum class** – typ wyliczeniowy, pozwala zdefiniować ograniczony zbiór stałych wartości. Przydatny np. do reprezentowania stanów, typów, kategorii:
-  ```kotlin
-  enum class Status {
-      ŁADOWANIE, SUKCES, BŁĄD
-  }
-
-  val status = Status.SUKCES
-  when (status) {
-      Status.ŁADOWANIE -> println("Trwa ładowanie...")
-      Status.SUKCES -> println("Sukces!")
-      Status.BŁĄD -> println("Wystąpił błąd")
-  }
-  ```
-    Enum w Kotlinie może mieć własne właściwości, metody oraz konstruktory. Dzięki temu enumy mogą przechowywać dodatkowe dane i zachowanie.
-
-    ```kotlin
-    enum class StanZamowienia(val opis: String, val czyFinalny: Boolean) {
-        NOWE("Nowe zamówienie", false),
-        W_REALIZACJI("W realizacji", false),
-        ZREALIZOWANE("Zrealizowane", true),
-        ANULOWANE("Anulowane", true);
-    }
-    ```
 - **object** – słowo kluczowe do tworzenia singletonów (pojedynczych instancji klas) lub obiektów anonimowych.
 
-- **Singleton:**
+  * **Singleton:**
   ```kotlin
   object Logger {
       fun log(msg: String) {
@@ -580,43 +785,303 @@ Interfejsy są szeroko wykorzystywane w Androidzie, np. do obsługi zdarzeń (kl
   Logger.log("Start aplikacji")
   ```
 
-- **Obiekt anonimowy** – przydatny np. do implementacji interfejsów „w locie”:
+  *  **Obiekt anonimowy** – przydatny np. do implementacji interfejsów „w locie”:
   ```kotlin
-  val klikacz = object : Klikalne {
-      override fun klik() {
+  val listener = object : Clickable {
+      override fun click() {
           println("Kliknięto anonimowy obiekt")
       }
   }
-  klikacz.klik()
+  listener.click()
   ```
 
-- **object companion** – obiekt towarzyszący w klasie, pozwala na tworzenie statycznych metod/pól:
+  * **companion object** – obiekt towarzyszący w klasie, pozwala na tworzenie statycznych metod/pól (bez konieczności tworzenia oddzielnej instancji):
   ```kotlin
-  class Uzytkownik(val imie: String) {
+  class User(val name: String) {
       companion object {
-          fun utworzAnonimowego() = Uzytkownik("Anonim")
+          fun createAnonymous() = User("Anonim")
       }
   }
-  val anonim = Uzytkownik.utworzAnonimowego()
+  val anonymous = User.createAnonymous()
   ```
+
+- **enum class** – typ wyliczeniowy, pozwala zdefiniować ograniczony zbiór stałych wartości. Przydatny np. do reprezentowania stanów, typów, kategorii:
+  ```kotlin
+  enum class Status {
+      LOADING, SUCCESS, ERROR
+  }
+
+  val status = Status.SUCCESS
+  when (status) {
+      Status.LOADING -> println("Trwa ładowanie...")
+      Status.SUCCESS -> println("Sukces!")
+      Status.ERROR   -> println("Wystąpił błąd")
+  }
+  ```
+    Enum w Kotlinie może mieć własne właściwości, metody oraz konstruktory. Dzięki temu enumy mogą przechowywać dodatkowe dane i zachowanie.
+
+    ```kotlin
+    enum class OrderStatus(val description: String, val isFinal: Boolean) {
+        NEW("Nowe zamówienie", false),
+        IN_PROGRESS("W realizacji", false),
+        COMPLETED("Zrealizowane", true),
+        CANCELLED("Anulowane", true); // zwróć uwagę na średnik
+    }
+    ```
+
+- **sealed class / sealed interface** – klasa lub interfejs reprezentujące **zamkniętą hierarchię typów**: wszystkie podtypy muszą być zdefiniowane w tym samym pliku (w Kotlinie od wersji 1.5 wymóg ogranicza się do tego samego pakietu w obrębie tego samego modułu kompilacji). Kompilator zna więc wszystkie możliwe podtypy, dzięki czemu wyrażenie `when` może być wyczerpujące — bez konieczności dodawania gałęzi `else`.
+
+   
+  > **Moduł kompilacji** to zbiór plików Kotlina kompilowanych razem w jednym kroku (np. jeden moduł Gradle w projekcie Android). Podtyp sealed class nie może być zdefiniowany w innej bibliotece czy module — hierarchia jest zamknięta dla zewnętrznego kodu.
+
+
+  ```kotlin
+  sealed class Result {
+      data class Success(val value: Int) : Result() // jeżeli klasa ma niepusty konstruktor  używamy class
+      data class Failure(val error: String) : Result()
+      data object Loading : Result() // jeżeli pusty konstruktor to object
+  }
+
+  fun handle(result: Result) {
+      when (result) {
+          is Result.Success -> println("Wynik: ${result.value}")
+          is Result.Failure -> println("Błąd: ${result.error}")
+          is Result.Loading -> println("Ładowanie...")
+          // nie trzeba else — kompilator wie, że to wszystkie przypadki
+      }
+  }
+  ```
+
+  `sealed interface` działa analogicznie, ale klasy implementujące mogą jednocześnie dziedziczyć po innej klasie (sealed class tego nie umożliwia, bo Kotlin nie ma wielokrotnego dziedziczenia klas):
+
+  ```kotlin
+  sealed interface Result {
+      data class Success(val value: Int) : Result
+      data class Failure(val error: String) : Result
+      data object Loading : Result
+  }
+
+  fun handle(result: Result) {
+      when (result) {
+          is Result.Success -> println("Wynik: ${result.value}")
+          is Result.Failure -> println("Błąd: ${result.error}")
+          is Result.Loading -> println("Ładowanie...")
+      }
+  }
+  ```
+
+  Kluczowa różnica: `data class Success` może tutaj jednocześnie dziedziczyć po innej klasie, np. `class Success(...) : SomeBaseClass(), Result`, co przy `sealed class` nie jest możliwe.
+
+  **Porównanie `enum class` vs `sealed class`:**
+
+  | Cecha | `enum class` | `sealed class` |
+  |---|---|---|
+  | Liczba instancji | stała, jedna na wartość | dowolna liczba obiektów danego podtypu |
+  | Dane w wariantach | wspólna struktura dla wszystkich | każdy podtyp może mieć inne pola |
+  | Podtypy | tylko stałe wyliczeniowe | pełnoprawne klasy (`data class`, `object`, klasy z logiką) |
+  | Wyczerpujące `when` | tak | tak |
+  | Zastosowanie | stały zbiór prostych stałych (np. `Direction.NORTH`) | hierarchia typów z różnymi danymi (np. wynik operacji, stan) |
 
 ---
 
-## 🔸 Funkcje i właściwości rozszerzające
+## `lateinit` i `by lazy`
 
-Funkcje i właściwości rozszerzające (extension functions, extension properties) pozwalają dodać nowe metody lub właściwości do istniejących klas – nawet tych, których nie możesz modyfikować (np. klasy z bibliotek lub Javy). 
+W Kotlinie zmienne wymagają inicjalizacji przy deklaracji. Istnieją jednak dwa mechanizmy pozwalające odłożyć inicjalizację na później.
+
+### `lateinit`
+
+Słowo kluczowe `lateinit` stosuje się do zmiennych `var` typów nieopcjonalnych (non-null), gdy inicjalizacja nie może nastąpić w momencie deklaracji, lecz zostanie wykonana przed pierwszym użyciem. Działa wyłącznie dla typów obiektowych (nie dla `Int`, `Boolean` itp.).
+
+```kotlin
+class UserRepository {
+    lateinit var database: Database  // zainicjalizowana później, np. przez framework DI
+
+    fun setup(db: Database) {
+        database = db
+    }
+
+    fun findUser(id: Int) = database.query(id)
+}
+```
+
+- Próba odczytu zmiennej `lateinit` przed inicjalizacją rzuca wyjątek `UninitializedPropertyAccessException`.
+- Można sprawdzić, czy zmienna była już zainicjalizowana: `::database.isInitialized`.
+
+### `by lazy`
+
+Delegacja `by lazy` służy do **leniwej inicjalizacji** zmiennych `val` — wartość jest obliczana dopiero przy pierwszym odczycie, a następnie zapamiętywana.
+
+```kotlin
+val processedData: List<String> by lazy {
+    println("Inicjalizacja listy...")
+    listOf("A", "B", "C").map { it.lowercase() }
+}
+
+// Blok lazy nie jest jeszcze uruchomiony
+println(processedData) // dopiero teraz następuje inicjalizacja
+println(processedData) // drugi raz: wynik zapamiętany, blok nie uruchamia się ponownie
+```
+
+**Porównanie:**
+
+| Cecha | `lateinit` | `by lazy` |
+|---|---|---|
+| Typ zmiennej | `var` | `val` |
+| Inicjalizacja | ręczna, w dowolnym miejscu | automatyczna, przy pierwszym użyciu |
+| Dozwolone typy | tylko obiektowe | wszystkie |
+| Bezpieczeństwo wątkowe | nie | domyślnie tak |
+
+---
+
+## Destrukturyzacja
+
+Destrukturyzacja pozwala rozłożyć obiekt na kilka zmiennych w jednej instrukcji. Jest dostępna dla `data class`, par (`Pair`), wpisów mapy i innych typów.
+
+- **Destrukturyzacja `data class`:**
+  ```kotlin
+  data class Product(val name: String, val price: Double)
+  val coffee = Product("Kawa", 12.99)
+
+  val (name, price) = coffee
+  println("$name kosztuje $price zł") // Kawa kosztuje 12.99 zł
+  ```
+
+- **Destrukturyzacja w pętli po mapie:**
+  ```kotlin
+  val map = mapOf("a" to 1, "b" to 2) // słowo "to" tworzy parę, np. "a" to 1 == Pair("a",1)
+  for ((key, value) in map) {
+      println("$key = $value")
+  }
+  ```
+
+- **Pomijanie wartości znakiem `_`:**
+  Jeśli któraś ze zmiennych nie jest potrzebna, można ją pominąć:
+  ```kotlin
+  val (_, price) = Product("Herbata", 8.50) // name pominięta
+  ```
+
+- **Destrukturyzacja w lambdach:**
+  ```kotlin
+  val products = listOf(Product("Kawa", 12.99), Product("Sok", 5.00))
+  products.forEach { (name, price) ->
+      println("$name: $price zł")
+  }
+  ```
+
+
+---
+
+## Funkcje zakresu
+
+Funkcje zakresu (ang. *scope functions*) to wbudowane funkcje Kotlina, które pozwalają wykonać blok kodu w kontekście danego obiektu. Dzięki nim kod staje się bardziej zwięzły, szczególnie przy inicjalizacji obiektów i obsłudze wartości nullable.
+
+W Kotlinie wyróżnia się pięć funkcji zakresu: `let`, `apply`, `run`, `also`, `with`. Różnią się sposobem odwoływania się do obiektu (`this` lub `it`) oraz tym, co zwracają.
+
+| Funkcja | Odwołanie do obiektu | Zwraca |
+|---|---|---|
+| `let` | `it` | wynik bloku |
+| `apply` | `this` | obiekt |
+| `run` | `this` | wynik bloku |
+| `also` | `it` | obiekt |
+| `with` | `this` | wynik bloku |
+
+### `apply` — konfiguracja obiektu
+
+Stosowany głównie do inicjalizacji lub konfiguracji obiektu. Wewnątrz bloku obiekt jest dostępny jako `this`. Zwraca sam obiekt.
+
+```kotlin
+data class Config(var host: String = "", var port: Int = 0, var timeout: Int = 0)
+
+val config = Config().apply {
+    host = "localhost"
+    port = 8080
+    timeout = 30
+}
+```
+
+### `let` — operacje na wartości, obsługa null
+
+Często używany z operatorem `?.` do bezpiecznej obsługi wartości nullable. Obiekt jest dostępny jako `it`.
+
+```kotlin
+val text: String? = fetchText()
+text?.let {
+    println("Długość: ${it.length}") // wykonane tylko gdy text != null
+}
+
+// let do transformacji wartości:
+val doubleLength = "Kotlin".let { it.length * 2 } // 12
+```
+
+### `run` — blok operacji zwracający wynik
+
+Występuje w dwóch wariantach:
+
+- **Na obiekcie** — podobny do `apply`, ale zwraca wynik bloku (nie obiekt). Obiekt dostępny jako `this`:
+  ```kotlin
+  val result = StringBuilder().run {
+      append("Kotlin ")
+      append("jest świetny")
+      toString() // ta wartość zostanie zwrócona
+  }
+  println(result) // Kotlin jest świetny
+  ```
+
+- **Bez obiektu** — blok kodu wykonywany w miejscu, zwracający wartość. Przydatny do wyodrębnienia fragmentu logiki lub inicjalizacji zmiennej wymagającej kilku kroków:
+  ```kotlin
+  val value = run {
+      val base = 10
+      val factor = 3
+      base * factor // wynik bloku przypisany do value
+  }
+  println(value) // 30
+  ```
+
+### `also` — efekty uboczne
+
+Stosowany gdy potrzebne jest wykonanie dodatkowej operacji (np. logowanie) bez modyfikowania obiektu. Zwraca obiekt.
+
+```kotlin
+val list = mutableListOf(1, 2, 3)
+    .also { println("Lista przed: $it") }
+list.add(4)
+```
+
+### `with` — operacje na obiekcie bez rozszerzenia
+
+Przyjmuje obiekt jako argument (nie jako odbiorcę wywołania). Przydatny gdy obiekt jest już znany i nie jest wynikiem wyrażenia.
+
+```kotlin
+val person = Person("Anna", 25)
+with(person) {
+    println("Imię: $name")
+    println("Wiek: $age")
+}
+```
+
+**Wskazówki — kiedy używać której funkcji:**
+- `apply` — konfiguracja lub inicjalizacja obiektu.
+- `let` — operacje na wartości nullable lub ograniczenie zakresu zmiennej.
+- `also` — efekt uboczny (np. logowanie) bez zmiany obiektu.
+- `run` / `with` — ciąg operacji na obiekcie, gdy potrzebny jest wynik bloku.
+
+---
+
+## Funkcje i właściwości rozszerzające
+
+Funkcje i właściwości rozszerzające (extension functions, extension properties) pozwalają dodać nowe metody lub właściwości do istniejących klas – nawet tych, których nie można modyfikować (np. klasy z bibliotek lub Javy).
 
 ### Funkcje rozszerzające
 
-- Definiujesz je poza klasą, poprzedzając nazwą typu, który rozszerzasz:
+- Definiuje się je poza klasą, poprzedzając nazwą typu, który jest rozszerzany:
   ```kotlin
-  fun String.odwroc(): String = this.reversed()
+  fun String.reverse(): String = this.reversed()
 
-  val tekst = "Kotlin"
-  println(tekst.odwroc()) // "niltok"
+  val text = "Kotlin"
+  println(text.reverse()) // "niltok"
   ```
 
-- Możesz rozszerzać dowolny typ, także klasy Androida:
+- Można rozszerzać dowolny typ, także klasy Androida:
   ```kotlin
   fun Context.toast(msg: String) =
       Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
@@ -630,13 +1095,13 @@ Funkcje i właściwości rozszerzające (extension functions, extension properti
 
 - Pozwalają dodać „pseudo-właściwości” do istniejących klas:
   ```kotlin
-  val String.odwrocony: String
+  val String.reversed: String
       get() = this.reversed()
 
-  println("Android".odwrocony) // "diordnA"
+  println("Android".reversed) // "diordnA"
   ```
 
-- Właściwości rozszerzające nie mogą mieć stanu (nie możesz zadeklarować pola), tylko getter.
+- Właściwości rozszerzające nie mogą mieć stanu (nie można zadeklarować pola), tylko getter.
 
 
 
