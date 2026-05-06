@@ -5,14 +5,14 @@
 ### [2. Android Studio](https://github.com/MarcinRod/AndroidLecture2025/blob/main/https://github.com/MarcinRod/AndroidLecture2025/blob/main/02%20Android%20Studio.md)  
    Struktura projektu, pliki Gradle, widoki projektu, emulator, debugowanie, logcat, konfiguracja środowiska.
 
-### [3. Aktywność](https://github.com/MarcinRod/AndroidLecture2025/blob/main/03%20Aktywność.md)  
+### [3. Funkcje kompozycyjne](https://github.com/MarcinRod/AndroidLecture2025/blob/main/03%20Funkcje%20kompozycyjne.md)  
+   Composable, nazewnictwo, Modifier, state hoisting, kontenery, elementy UI, podgląd, dobre praktyki.
+
+### [4. Aktywność](https://github.com/MarcinRod/AndroidLecture2025/blob/main/04%20Aktywno%C5%9B%C4%87.md)  
    Definicja aktywności, cykl życia, metody cyklu, zarządzanie stanem, kontekst aplikacji.
 
-### [4. Zasoby](https://github.com/MarcinRod/AndroidLecture2025/blob/main/04%20Zasoby.md)  
+### [5. Zasoby](https://github.com/MarcinRod/AndroidLecture2025/blob/main/05%20Zasoby.md)  
    Typy zasobów, katalog `res/`, klasa `R`, korzystanie z zasobów w Compose, alternatywne zasoby, internacjonalizacja.
-
-### [5. Funkcje kompozycyjne](https://github.com/MarcinRod/AndroidLecture2025/blob/main/05%20Funkcje%20kompozycyjne.md)  
-   Composable, nazewnictwo, Modifier, state hoisting, kontenery, elementy UI, podgląd, dobre praktyki.
    
 --- 
 ### 📱Aplikacja pokazowa do tematów 3-5: [QuizShowcase](https://github.com/MarcinRod/QuizShowcase)

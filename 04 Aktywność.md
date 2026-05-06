@@ -27,7 +27,7 @@ class MainActivity : ComponentActivity() {
 
 ## Architektura Single Activity
 
-Nowoczesne aplikacje Android (szczególnie oparte na Jetpack Compose) opierają się na wzorcu **Single Activity** – cała aplikacja działa w ramach jednej Activity, a poszczególne ekrany to osobne funkcje composable, między którymi nawiguje się za pomocą **Jetpack Navigation** (patrz: [Komponent Nawigacji](https://github.com/MarcinRod/AndroidLecture2025/blob/main/06%20Komponent%20nawigacji.md) ).
+Nowoczesne aplikacje Android (szczególnie oparte na Jetpack Compose) opierają się na wzorcu **Single Activity** – cała aplikacja działa w ramach jednej Activity, a poszczególne ekrany to osobne funkcje composable, między którymi nawiguje się za pomocą **Jetpack Navigation** .
 
 ```
 MainActivity
@@ -46,7 +46,7 @@ Podejście to ma kilka zalet w porównaniu z klasycznym modelem wielu Activity:
 | Animacje przejść           | Trudniejsze do dostosowania           | Wbudowane w Navigation Compose     |
 | Współdzielenie stanu       | Skomplikowane (przez Intent lub Bus)  | Łatwe przez współdzielony ViewModel  |
 
-> Nawigacja w Compose jest omawiana w osobnym rozdziale. W tym kursie tworzy się aplikacje w oparciu o Single Activity.
+> Nawigacja w Compose jest omawiana w osobnym rozdziale (rozdział 6: [Komponent nawigacji](https://github.com/MarcinRod/AndroidLecture2025/blob/main/06%20Komponent%20nawigacji.md) ). W tym kursie tworzy się aplikacje w oparciu o Single Activity.
 
 ## Cykl życia aktywności
 
@@ -133,10 +133,10 @@ Każde pole klasy Activity jest resetowane do wartości domyślnych. Dane niechr
 ### Rozwiązania
 
 - **`ViewModel`** – zalecane podejście. Dane przechowywane w ViewModelu przeżyją zmianę konfiguracji, ponieważ ViewModel nie jest niszczony razem z Activity.
-- **`rememberSaveable`** (Compose) – przechowuje stan composable w `Bundle`, który jest odtwarzany po zmianie konfiguracji. Odpowiednik `onSaveInstanceState` po stronie Compose.
+- **`rememberSaveable`** (Compose) – przechowuje stan composable w `Bundle`, który jest odtwarzany po zmianie konfiguracji. Odpowiednik `onSaveInstanceState` po stronie Compose (omówiony w poprzednim rozdziale).
 - **`onSaveInstanceState`** – tradycyjny mechanizm zapisywania prostych danych (stringów, liczb) do `Bundle` przed zniszczeniem Activity.
 
-> W tym kursie głównym narzędziem do obsługi zmian konfiguracji będzie **ViewModel**, omówiony w rozdziale poświęconym architekturze aplikacji.
+> W tym kursie głównym narzędziem do obsługi zmian konfiguracji będzie **ViewModel**, omówiony w rozdziale poświęconym architekturze aplikacji ([Architetura aplikacji](https://github.com/MarcinRod/AndroidLecture2025/blob/main/09%20Architektura%20aplikacji.md)).
 
 ### Co to jest `Context`?
 
@@ -168,8 +168,6 @@ W funkcjach composable używamy:
 ```kotlin
 val context = LocalContext.current
 ```
-
-`LocalContext` to CompositionLocal, który udostępnia aktualny kontekst (najczęściej Activity lub Application).
 
 ### Przykłady użycia `Context` w Compose
 
@@ -218,4 +216,4 @@ val context = LocalContext.current
 
 ---
 
-**Następny temat:** [Zasoby aplikacji](https://github.com/MarcinRod/AndroidLecture2025/blob/main/04%20Zasoby.md)
+**Następny temat:** [Zasoby aplikacji](https://github.com/MarcinRod/AndroidLecture2025/blob/main/05%20Zasoby.md)

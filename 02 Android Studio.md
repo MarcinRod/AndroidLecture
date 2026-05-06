@@ -1,4 +1,4 @@
-# 📁 Struktura projektu Android Studio i skrypty Gradle
+# Środowisko Android Studio
 
 Tworząc aplikację w Android Studio, projekt składa się z wielu katalogów i plików, które pełnią określone role. W tym rozdziale omówimy:
 
@@ -8,11 +8,11 @@ Tworząc aplikację w Android Studio, projekt składa się z wielu katalogów i 
 
 ---
 
-### 🛠️ Android Studio – podstawy
+## Android Studio – podstawy
 
 **Android Studio** to oficjalne IDE (zintegrowane środowisko programistyczne) do tworzenia aplikacji na Androida, oparte na IntelliJ IDEA od JetBrains.
 
-#### 🔑 Główne cechy Android Studio:
+### Główne cechy Android Studio
 
 - Wsparcie dla **Jetpack Compose**, **ViewModel**, **LiveData**, **Room**, itp.
 - Zaawansowane **narzędzia do debugowania** (Logcat, Debugger, Profiler).
@@ -23,7 +23,7 @@ Tworząc aplikację w Android Studio, projekt składa się z wielu katalogów i 
 - **Wtyczki** do obsługi wielu języków i technologii.
 
 
-#### 📈 Najważniejsze panele
+### Najważniejsze panele
 
 - **Project** – struktura katalogów i plików.
 - **Editor** – główny edytor kodu i layoutów.
@@ -32,22 +32,17 @@ Tworząc aplikację w Android Studio, projekt składa się z wielu katalogów i 
 - **Device Manager** – zarządzanie emulatorami i urządzeniami fizycznymi.
 
 ---
-## 🔍 Wybrane szczegóły projektu w Android Studio
+## Wybrane szczegóły projektu
 
-W tej sekcji omówimy kilka ważnych aspektów pracy w Android Studio, które często pojawiają się na początku nauki tworzenia aplikacji mobilnych:
-
-- Nazwa paczki (package name)
-- Widoki projektu w Android Studio vs rzeczywista struktura na dysku
-- Debugowanie i Logcat
-- Emulator Androida
+W tej sekcji omówione zostaną ważne aspekty pracy w Android Studio, które często pojawiają się na początku nauki tworzenia aplikacji mobilnych.
 
 ---
 
-### 🏷️ Nazwa paczki (Package Name)
+### Nazwa paczki (Package Name)
 
-**Nazwa paczki** to unikalny identyfikator Twojej aplikacji w systemie Android. Jest ona zapisywana w pliku `AndroidManifest.xml` oraz w `build.gradle` jako `applicationId`.
+**Nazwa paczki** to unikalny identyfikator aplikacji w systemie Android. Jest ona zapisywana w pliku `AndroidManifest.xml` oraz w `build.gradle` jako `applicationId`.
 
-#### 📌 Przykład:
+**Przykład:**
 
 ```kotlin
 // app/build.gradle
@@ -64,21 +59,21 @@ defaultConfig {
   - identyfikację aplikacji w Google Play,
   - generowanie pliku `BuildConfig` i kluczy dla Firebase.
 
-> 📌 Uwaga: Zmiana `applicationId` w `build.gradle` pozwala na publikację innej wersji aplikacji bez kolizji z poprzednią.
+> **Uwaga:** Zmiana `applicationId` w `build.gradle` pozwala na publikację innej wersji aplikacji bez kolizji z poprzednią.
 
 ---
 
-### 🗂️ Widoki projektu: Android Studio vs system plików
+### Widoki projektu: Android Studio vs system plików
 
 Android Studio oferuje różne **widoki projektu**, aby ułatwić pracę:
 
-#### 📁 Widok **Android**
+#### Widok Android
 
 - Grupuje pliki logicznie (np. wszystkie layouty razem).
 - Ukrywa zbędne katalogi (`build`, `intermediates`).
 - Najczęściej używany przez początkujących i w codziennej pracy.
 
-#### 🗃️ Widok **Project**
+#### Widok Project
 
 - Pokazuje **rzeczywistą strukturę katalogów na dysku**.
 - Przydatny przy pracy z plikami `gradle`, konfiguracjami CI/CD itp.
@@ -86,7 +81,7 @@ Android Studio oferuje różne **widoki projektu**, aby ułatwić pracę:
 
 
 
-#### 📂 Struktura katalogów projektu
+#### Struktura katalogów projektu
 
 Po utworzeniu nowego projektu w Android Studio, domyślna struktura na dysku wygląda mniej więcej tak:
 
@@ -135,14 +130,14 @@ MyApp (Android)
 │   └── gradle.properties
 
 ```
-#### 📝 Opis niektórych elementów:
+#### Opis elementów
 
 - **`manifests/AndroidManifest.xml`**  
   - Deklaruje podstawowe informacje o aplikacji: pakiet, aktywności, uprawnienia.
 
 - **`java/com.example.myapp`**  
   - Główna przestrzeń kodu aplikacji. Tu znajdują się klasy i funkcje (np. `MainActivity.kt`, `Repository.kt`, `ViewModel.kt`).
-  - Możesz tworzyć podfoldery według architektury: `ui`, `data`, `domain`, itp.
+  - Można tworzyć podfoldery według architektury: `ui`, `data`, `domain`, itp.
 
 - **`res/`**  
   - Zasoby aplikacji – obrazy, kolory, teksty, style itp.
@@ -151,22 +146,24 @@ MyApp (Android)
   - Skrypty konfiguracyjne:
     - `build.gradle (Project)` – konfiguracja ogólna projektu (np. wersje pluginów, repozytoria).
     - `build.gradle (Module)` – konfiguracja modułu aplikacji (`applicationId`, zależności, wersje).
+    - `settings.gradle` – określa, które moduły wchodzą w skład projektu.
+    - `gradle.properties` – globalne właściwości Gradle (np. rozmiar pamięci JVM, flagi optymalizacji).
    
 
-> 💡 Widok "Android" nie pokazuje katalogów `build/`, `intermediates/`, `outputs/` – są one ukryte, aby nie przeszkadzały w codziennej pracy.
+> Widok "Android" nie pokazuje katalogów `build/`, `intermediates/`, `outputs/` – są one ukryte, aby nie przeszkadzały w codziennej pracy.
 
 ---
 
-📌 Widok "Android" to najwygodniejszy sposób przeglądania projektu podczas codziennego programowania, ale czasem warto przełączyć się na widok "Project", by zobaczyć dokładny układ plików na dysku.
+Widok "Android" to najwygodniejszy sposób przeglądania projektu podczas codziennego programowania, jednak widok "Project" pozwala zobaczyć dokładny układ plików na dysku.
 
 ---
 
 
-## 📱 Android Emulator
+## Android Emulator
 
-**Emulator Androida** pozwala uruchomić aplikację bez fizycznego urządzenia. Wszystkie urządzenia zarządzanie są przez `Device Manager`
+**Emulator Androida** pozwala uruchomić aplikację bez fizycznego urządzenia. Wszystkie urządzenia zarządzane są przez `Device Manager`
 
-### ✨ Zalety:
+### Zalety
 
 1. **Szybkie i wygodne testowanie**
    - Możliwość natychmiastowego uruchomienia aplikacji bez potrzeby podłączania fizycznego urządzenia.
@@ -191,7 +188,7 @@ MyApp (Android)
    - Szybki dostęp do systemowych logów i możliwości inspekcji zasobów.
 
 5. **Bezpieczeństwo i izolacja**
-   - Emulator działa w odizolowanym środowisku – nie narażasz fizycznego telefonu na uszkodzenie lub przypadkowe nadpisanie danych.
+   - Emulator działa w odizolowanym środowisku – urządzenie fizyczne nie jest narażone na uszkodzenie lub przypadkowe nadpisanie danych.
 
 6. **Brak potrzeby zakupu wielu urządzeń**
    - Pozwala testować aplikacje na różnych wersjach Androida (nawet starszych) i konfiguracjach sprzętowych bez inwestycji w realne telefony czy tablety.
@@ -200,7 +197,7 @@ MyApp (Android)
    - Możliwość szybkiego przywrócenia emulatora do stanu początkowego – przydatne przy testach związanych z onboardingiem, uprawnieniami czy pierwszym uruchomieniem.
 
 
-### ❌ Wady emulatora:
+### Wady emulatora
 
 1. **Wysokie zużycie zasobów**
    - Emulator zużywa znaczną ilość pamięci RAM, CPU i przestrzeni dyskowej.
@@ -215,36 +212,36 @@ MyApp (Android)
    - Działanie funkcji może różnić się od tego na prawdziwym urządzeniu.
 
 ---
-## 🐞 Debugowanie i Logcat w Android Studio
+## Debugowanie i Logcat
 
-Debugowanie to proces znajdowania i usuwania błędów (bugów) w kodzie. Android Studio oferuje bogaty zestaw narzędzi do debugowania aplikacji, z czego najważniejsze to **Logcat** oraz **debugger z system punktów przerwań (ang. *breakpoint*)**.
+Debugowanie to proces znajdowania i usuwania błędów (bugów) w kodzie. Android Studio oferuje bogaty zestaw narzędzi do debugowania aplikacji, z czego najważniejsze to **Logcat** oraz **debugger z systemem punktów przerwania (ang. *breakpoint*)**.
 
 ---
 
-### 🧪 Debugowanie aplikacji w Android Studio
+### Debugowanie aplikacji
 
 Android Studio pozwala debugować aplikację krok po kroku, zatrzymywać wykonywanie w konkretnych miejscach oraz przeglądać wartości zmiennych i stos wywołań.
 
-#### 🔹 Breakpoint
+#### Breakpoint
 
 - Breakpoint to punkt zatrzymania – miejsce, w którym debugger zatrzyma wykonywanie programu.
 - Można go ustawić klikając w lewy margines edytora kodu przy danej linii.
 - Umożliwia sprawdzenie stanu aplikacji w danym momencie: wartości zmiennych, wywołania metod itp.
 
-#### 🔹 Debugger
+#### Debugger
 
-- Aby uruchomić aplikację w trybie debugowania, kliknij przycisk z ikoną robaka ("Debug app").
-- Po zatrzymaniu w punkcie przerwania możesz przeglądać stan zmiennych, rejestrów i stos wywołań.
-
----
-
-## 📋 Logcat – analiza błędów i diagnostyka wyjątków
-
-**Logcat** to najważniejsze narzędzie diagnostyczne Android Studio – umożliwia śledzenie logów systemowych oraz błędów aplikacji w czasie rzeczywistym. Dzięki niemu łatwo wykryjesz wyjątki, komunikaty błędów, ostrzeżenia czy działania systemowe.
+- Aplikację w trybie debugowania uruchamia się przyciskiem z ikoną robaka ("Debug app").
+- Po zatrzymaniu w punkcie przerwania można przeglądać stan zmiennych, rejestrów i stos wywołań.
 
 ---
 
-### 🔹 Poziomy logowania
+### Logcat – analiza błędów i diagnostyka wyjątków
+
+**Logcat** to najważniejsze narzędzie diagnostyczne Android Studio – umożliwia śledzenie logów systemowych oraz błędów aplikacji w czasie rzeczywistym. Ułatwia wykrywanie wyjątków, komunikatów błędów, ostrzeżeń oraz działań systemowych.
+
+---
+
+### Poziomy logowania
 
 | Poziom | Znaczenie                   |
 |--------|-----------------------------|
@@ -257,7 +254,7 @@ Android Studio pozwala debugować aplikację krok po kroku, zatrzymywać wykonyw
 
 ---
 
-### 🔹 Przykład logowania w Kotlinie:
+### Przykład logowania
 
 ```kotlin
 import android.util.Log
@@ -269,7 +266,7 @@ Log.e("LoginScreen", "Błąd autoryzacji", exception)
 
 ---
 
-### 🧨 Przykład wyjątku (Exception) w Logcat
+### Przykład wyjątku w Logcat
 
 Załóżmy, że aplikacja rzuciła `NullPointerException`. W Logcat zobaczysz coś takiego:
 
@@ -284,7 +281,7 @@ E/AndroidRuntime: FATAL EXCEPTION: main
 
 ---
 
-### 🧠 Jak analizować wyjątek?
+### Jak analizować wyjątek
 
 1. **Typ wyjątku**: `NullPointerException`  
    ➤ To oznacza, że aplikacja próbowała odwołać się do obiektu, który był `null`.
@@ -303,7 +300,7 @@ E/AndroidRuntime: FATAL EXCEPTION: main
 
 ---
 
-### 🔧 Typowy kod, który mógł wywołać ten wyjątek:
+### Typowy kod wywołujący wyjątek
 
 ```kotlin
 override fun onCreate(savedInstanceState: Bundle?) {
@@ -311,12 +308,12 @@ override fun onCreate(savedInstanceState: Bundle?) {
     setContentView(R.layout.activity_main)
 
     val text = findViewById<TextView>(R.id.myTextView)
-    val input = text.text.toString() // <- crash jeśli `text` to null
+    val input = text.text.toString() // <- wyjątek jeśli `text` to null
 }
 ```
 ---
 
-### 🔍 Filtrowanie Logcat:
+### Filtrowanie Logcat
 
 Aby szybciej znaleźć błąd lub interesującą nas informacje w Logcat:
 - Wybierz odpowiedni poziom logowania np. **Error**
@@ -325,7 +322,7 @@ Aby szybciej znaleźć błąd lub interesującą nas informacje w Logcat:
 
 ---
 
-### 🧪 Debugging + Logcat = Pełna analiza
+### Debugging + Logcat
 
 Po znalezieniu błędu w Logcat, warto:
 - Ustawić **breakpoint** w podejrzanej linii
@@ -333,12 +330,12 @@ Po znalezieniu błędu w Logcat, warto:
 
 ---
 
-📌 **Wskazówka**: Logcat działa najlepiej, gdy regularnie logujesz istotne informacje w kodzie – nie tylko błędy, ale również przebieg aplikacji (np. przejścia między ekranami, dane wejściowe użytkownika, odpowiedzi z API).
+**Wskazówka**: Logcat działa najlepiej, gdy regularnie loguje się istotne informacje w kodzie – nie tylko błędy, ale również przebieg aplikacji (np. przejścia między ekranami, dane wejściowe użytkownika, odpowiedzi z API).
 
 
 ---
 
-### 🧰 Inne narzędzia debugujące:
+### Inne narzędzia debugujące
 
 - **Layout Inspector** – do analizy struktury widoku w czasie rzeczywistym.
 - **Network Profiler** – podgląd zapytań sieciowych.
@@ -347,7 +344,7 @@ Po znalezieniu błędu w Logcat, warto:
 
 ---
 
-## ⚙️ Gradle – system budowania
+## Gradle – system budowania
 
 **Gradle** to system automatyzacji budowania, który Android Studio wykorzystuje do:
 
@@ -357,200 +354,18 @@ Po znalezieniu błędu w Logcat, warto:
 - uruchamiania testów,
 - konfiguracji środowisk produkcyjnych i testowych.
 
-### 🧠 Jak działa Gradle?
+### Jak działa Gradle
 
-- Gradle analizuje pliki konfiguracyjne (`build.gradle`) i tworzy **graf zadań**.
+- Gradle analizuje pliki konfiguracyjne (`build.gradle.kts`) i tworzy **graf zadań**.
 - Wykonuje zadania w zależności od celu (np. `build`, `assembleDebug`).
 - Pobiera zależności z repozytoriów takich jak **Google** czy **Maven Central**.
-- Dzięki **kotlin dsl (`.gradle.kts`)** możliwa jest alternatywna konfiguracja w języku Kotlin.
+- Nowoczesne projekty Android Studio używają **Kotlin DSL** (`.gradle.kts`) – konfiguracja pisana w języku Kotlin.
 
 ---
 
-## 📄 Przykładowe pliki Gradle
+## Zarządzanie wersjami: `libs.versions.toml`
 
-### 🔤 `build.gradle` (główny projekt)
-
-Ten plik służy do konfigurowania ustawień globalnych dla wszystkich modułów projektu (np. aplikacji, bibliotek itp.).
-
-
-
-```groovy
-buildscript {
-    ext {
-        kotlin_version = '1.9.22'
-    }
-    repositories {
-        google()
-        mavenCentral()
-    }
-    dependencies {
-        classpath 'com.android.tools.build:gradle:8.4.0'
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-}
-```
-
-
-### 🔤 `build.gradle` (moduł app)
-
-Zawiera informacje dotyczące kompilacji Twojej aplikacji – m.in.:
-
-- wtyczki (plugins),
-- poziomy SDK,
-- zależności (dependencies),
-- opcje kompilacji i testów.
-
-#### 📌 Przykład:
-
-```groovy
-plugins {
-    id 'com.android.application'
-    id 'org.jetbrains.kotlin.android'
-}
-
-android {
-    compileSdk 34
-
-    defaultConfig {
-        applicationId "com.example.myapp"
-        minSdk 24
-        targetSdk 34
-        versionCode 1
-        versionName "1.0"
-    }
-
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-        }
-    }
-}
-
-dependencies {
-    implementation 'androidx.core:core-ktx:1.13.0'
-    implementation 'androidx.compose.ui:ui:1.6.4'
-}
-```
-## 🧱 Sekcje pliku `build.gradle` modułu aplikacji (`app/`)
-
-Plik `app/build.gradle` (lub `build.gradle.kts`) zawiera konfigurację konkretnego modułu – w przypadku Androida jest to najczęściej moduł aplikacji. Poniżej opisujemy kluczowe sekcje tego pliku.
-
----
-
-### 🔌 `plugins`
-
-Deklaruje wtyczki potrzebne do budowy tego modułu. Dla aplikacji Android i języka Kotlin będą to zazwyczaj:
-
-```groovy
-plugins {
-    id 'com.android.application'
-    id 'org.jetbrains.kotlin.android'
-}
-```
-
----
-
-### 🧱 `android`
-
-To główna sekcja konfigurująca projekt Android. Wewnątrz niej znajdziesz kilka podsekcji:
-
-```groovy
-android {
-    namespace 'com.example.myapp' // od Android Studio Flamingo zamiast applicationId
-    compileSdk 34
-
-    defaultConfig {
-        applicationId "com.example.myapp"  // unikalny identyfikator aplikacji (package name)
-        minSdk 24
-        targetSdk 34
-        versionCode 1
-        versionName "1.0"
-    }
-
-    buildTypes {
-        release {
-            minifyEnabled false  // Proguard/R8 – kompresja i obfuskacja
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-        }
-        debug {
-            applicationIdSuffix ".debug" // aplikacja debug ma inną nazwę pakietu
-            debuggable true
-        }
-    }
-
-    buildFeatures {
-        compose true  // aktywuje Jetpack Compose
-    }
-
-    composeOptions {
-        kotlinCompilerExtensionVersion '1.6.4'
-    }
-
-    
-}
-```
-
-#### 📌 Opis podsekcji:
-
-| Sekcja                  | Opis |
-|-------------------------|------|
-| `namespace`             | Deklaruje przestrzeń nazw dla klas (zastępuje `applicationId` w nowszych projektach). |
-| `compileSdk`            | Wersja SDK, z którą kompilujemy aplikację. |
-| `defaultConfig`         | Domyślne ustawienia aplikacji (ID, wersja, SDK, testy). |
-| `buildTypes`            | Definiuje typy kompilacji (debug, release). |
-| `buildFeatures`         | Aktywuje wybrane funkcje np. Compose, ViewBinding, DataBinding. |
-| `composeOptions`        | Ustawienia specyficzne dla Jetpack Compose. |
-
----
-
-### 📦 `dependencies`
-
-Sekcja zawierająca wszystkie zależności – biblioteki zewnętrzne, AndroidX, Compose, Retrofit, Firebase itd.
-
-```groovy
-dependencies {
-    implementation 'androidx.core:core-ktx:1.13.0'
-    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.7.0'
-    implementation 'androidx.compose.ui:ui:1.6.4'
-    implementation 'com.google.dagger:hilt-android:2.51'
-
-    testImplementation 'junit:junit:4.13.2'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
-    debugImplementation 'androidx.compose.ui:ui-tooling:1.6.4'
-}
-```
-
-#### Typy zależności:
-
-| Typ                    | Znaczenie |
-|------------------------|-----------|
-| `implementation`       | Główna zależność – widoczna tylko w tym module. |
-| `testImplementation`   | Zależności używane tylko podczas testów jednostkowych. |
-| `androidTestImplementation` | Zależności do testów instrumentalnych. |
-| `debugImplementation`  | Używane tylko w kompilacji debug (np. UI tooling). |
-
----
-
-📌 Wskazówka: Android Studio automatycznie synchronizuje projekt po zmianach w plikach Gradle (jest to wymagane), gdyby jednak synchronizacja nie wykonała się automatycznie użyj przycisku **"Sync Now"**.
-
-
----
-
-## 🧩 Plugins vs Dependencies – jaka jest różnica?
-
-| Cecha              | Plugins (wtyczki)                                      | Dependencies (biblioteki)                                |
-|--------------------|--------------------------------------------------------|-----------------------------------------------------------|
-| Co to jest?         | Rozszerzenia Gradle, które modyfikują sposób działania kompilacji | Kody zewnętrzne, które dołączasz do aplikacji            |
-| Przykład            | `com.android.application`, `kotlin-android`           | `androidx.compose.ui:ui`, `retrofit2:retrofit`            |
-| Gdzie się je dodaje | Sekcja `plugins`                                      | Sekcja `dependencies`                                     |
-| Funkcja             | Zmienia konfigurację projektu                          | Dodaje funkcjonalność do aplikacji (np. baza danych)   |
-
----
-## 📦 Nowoczesne zarządzanie wersjami: `libs.versions.toml`
-
-Od Gradle 7.0 można używać pliku `libs.versions.toml` do centralnego zarządzania wersjami bibliotek i pluginów.
-
-### 🔧 Lokalizacja:
+Od Gradle 7.0 wersje bibliotek i pluginów można centralnie zarządzać w pliku `libs.versions.toml`, który znajduje się w katalogu `gradle/`:
 
 ```
 MyApp/
@@ -558,7 +373,7 @@ MyApp/
     └── libs.versions.toml
 ```
 
-### 📄 Przykładowa zawartość `libs.versions.toml`:
+Plik dzieli się na trzy sekcje:
 
 ```toml
 [versions]
@@ -576,30 +391,159 @@ android-application = { id = "com.android.application", version = "8.4.0" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 ```
 
-### 📄 build.gradle.kts z użyciem `libs.versions.toml`
+**Zalety:**
+- centralne miejsce do zarządzania wersjami,
+- brak duplikacji wersji między modułami,
+- łatwa aktualizacja zależności.
+
+---
+
+## Pliki `build.gradle.kts`
+
+W projekcie Android występują dwa pliki `build.gradle.kts`:
+
+- **`build.gradle.kts` (główny projekt)** – konfiguruje ustawienia wspólne dla wszystkich modułów (np. repozytoria, deklaracje pluginów).
+- **`app/build.gradle.kts` (moduł app)** – konfiguruje konkretny moduł aplikacji (SDK, zależności, typy kompilacji).
+
+### `build.gradle.kts` (główny projekt)
+
+```kotlin
+plugins {
+    alias(libs.plugins.android.application) apply false
+    alias(libs.plugins.kotlin.android) apply false
+}
+```
+
+`apply false` oznacza, że plugin jest jedynie zadeklarowany na poziomie projektu (aby ustalić jego wersję), ale nie jest jeszcze aktywowany – aktywacja następuje w pliku modułu (`app/build.gradle.kts`).
+
+---
+
+## Sekcje pliku `app/build.gradle.kts`
+
+Plik `app/build.gradle.kts` zawiera konfigurację modułu aplikacji. Poniżej opisano kluczowe sekcje.
+
+---
+
+### `plugins`
+
+Deklaruje wtyczki potrzebne do budowy modułu. Przy użyciu `libs.versions.toml` odwołanie wygląda następująco:
 
 ```kotlin
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
 }
-
-dependencies {
-    implementation(libs.kotlin.stdlib)
-    implementation(libs.compose.ui)
-}
 ```
 
 ---
 
-✅ **Zalety `libs.versions.toml`**:
-- centralne miejsce do zarządzania wersjami,
-- brak duplikacji wersji między modułami,
-- łatwa aktualizacja zależności.
+### `android`
+
+Główna sekcja konfigurująca moduł aplikacji Android:
+
+```kotlin
+android {
+    namespace = "com.example.myapp"   // przestrzeń nazw dla klas R i BuildConfig
+    compileSdk = 34
+
+    defaultConfig {
+        applicationId = "com.example.myapp"  // unikalny identyfikator aplikacji
+        minSdk = 24                           // minimalna wersja Androida (API 24 = Android 7.0)
+        targetSdk = 34                        // wersja Androida, pod którą aplikacja jest zoptymalizowana
+        versionCode = 1                       // liczba całkowita, zwiększana przy każdej publikacji
+        versionName = "1.0"                   // czytelna wersja wyświetlana użytkownikowi
+    }
+
+    buildTypes {
+        release {
+            isMinifyEnabled = false  // Proguard/R8 – kompresja i obfuskacja kodu
+            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+        }
+        debug {
+            applicationIdSuffix = ".debug"  // wersja debug instalowana obok release
+            isDebuggable = true
+        }
+    }
+
+    buildFeatures {
+        compose = true      // aktywuje Jetpack Compose
+        buildConfig = true  // generuje klasę BuildConfig z informacjami o wersji i typie kompilacji
+    }
+
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.6.4"
+    }
+}
+```
+
+#### Opis podsekcji
+
+| Sekcja                  | Opis |
+|-------------------------|------|
+| `namespace`             | Przestrzeń nazw dla klas R i BuildConfig. |
+| `compileSdk`            | Wersja SDK, z którą kompilowana jest aplikacja. |
+| `defaultConfig`         | Domyślne ustawienia aplikacji (ID, wersja, SDK, testy). |
+| `buildTypes`            | Definiuje typy kompilacji (debug, release). Domyślnie istnieją dwa typy: `debug` (do tworzenia) i `release` (wersja produkcyjna). Można definiować własne. |
+| `buildFeatures`         | Aktywuje wybrane funkcje generowania kodu: `compose = true` włącza Jetpack Compose, `buildConfig = true` generuje klasę `BuildConfig` dostępną w kodzie aplikacji (zawiera m.in. `BuildConfig.DEBUG`, `BuildConfig.VERSION_NAME`). |
+| `composeOptions`        | Ustawienia specyficzne dla Jetpack Compose. |
+
+Różnice między typami kompilacji:
+
+| Cecha                     | `debug`                                    | `release`                                      |
+|---------------------------|--------------------------------------------|------------------------------------------------|
+| Przeznaczenie             | Tworzenie i testowanie                     | Dystrybucja (Google Play, APK końcowy)         |
+| Debugowanie               | Włączone (`isDebuggable = true`)           | Wyłączone                                      |
+| Minifikacja / obfuskacja  | Wyłączona                                  | Opcjonalna (`isMinifyEnabled`, Proguard/R8)    |
+| Podpisywanie              | Automatyczny klucz testowy                 | Wymagany własny klucz (`keystore`)             |
+| Wydajność                 | Wolniejsza (dodatkowe narzędzia diagnostyczne) | Zoptymalizowana                             |
+| `applicationId`           | Może mieć sufiks (`.debug`)                | Właściwe ID aplikacji                          |
+
 ---
 
+### `dependencies`
 
-✅ **Sprawdź oficjalną dokumentację** [Android Studio](https://developer.android.com/studio) i [Gradle](https://docs.gradle.org/current/userguide/userguide.html).
+Sekcja zawierająca wszystkie zależności – biblioteki zewnętrzne, AndroidX, Compose, Retrofit, Firebase itd. Przy użyciu `libs.versions.toml`:
+
+```kotlin
+dependencies {
+    implementation(libs.kotlin.stdlib)
+    implementation(libs.androidx.lifecycle.runtime.ktx)
+    implementation(libs.compose.ui)
+    implementation(libs.hilt.android)
+
+    testImplementation(libs.junit)
+    androidTestImplementation(libs.androidx.test.ext.junit)
+    debugImplementation(libs.compose.ui.tooling)
+}
+```
+
+#### Typy zależności
+
+| Typ                          | Znaczenie |
+|------------------------------|-----------|
+| `implementation`             | Główna zależność – widoczna tylko w tym module. |
+| `testImplementation`         | Zależności używane tylko podczas testów jednostkowych. |
+| `androidTestImplementation`  | Zależności do testów instrumentalnych. |
+| `debugImplementation`        | Używane tylko w kompilacji debug (np. UI tooling). |
+
+---
+
+**Wskazówka:** Każda zmiana w plikach Gradle wymaga synchronizacji projektu, należy w tym celu użyć przycisku **"Sync Now"**.
+
+---
+
+## Plugins vs Dependencies
+
+| Cecha               | Plugins (wtyczki)                                                  | Dependencies (biblioteki)                             |
+|---------------------|--------------------------------------------------------------------|-------------------------------------------------------|
+| Co to jest?         | Rozszerzenia Gradle modyfikujące sposób działania kompilacji       | Zewnętrzny kod dołączany do aplikacji                 |
+| Przykład            | `com.android.application`, `kotlin-android`                       | `androidx.compose.ui:ui`, `retrofit2:retrofit`        |
+| Gdzie się je dodaje | Sekcja `plugins`                                                   | Sekcja `dependencies`                                 |
+| Funkcja             | Zmienia konfigurację projektu                                      | Dodaje funkcjonalność do aplikacji (np. baza danych)  |
+
+---
+
+**Dokumentacja:** [Android Studio](https://developer.android.com/studio) i [Gradle](https://docs.gradle.org/current/userguide/userguide.html).
 
 
-### 🧭 **Następny temat:** [Koncepcję aktywności i jej cykl życia](https://github.com/MarcinRod/AndroidLecture2025/blob/main/03%20Aktywność.md)
+**Następny temat:** [Funkcje kompozycyjne](https://github.com/MarcinRod/AndroidLecture2025/blob/main/03%20Funkcje%20kompozycyjne.md)

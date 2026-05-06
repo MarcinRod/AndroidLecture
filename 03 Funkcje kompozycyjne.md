@@ -517,4 +517,4 @@ Podgląd w Compose znacznie przyspiesza pracę nad UI, pozwala testować różne
 - [State hoisting – oficjalny poradnik](https://developer.android.com/jetpack/compose/state#hoisting)
 
 ---
-### 🧭 **Następny temat:** [Komponent Nawigacji](https://github.com/MarcinRod/AndroidLecture2025/blob/main/06%20Komponent%20nawigacji.md)
+### **Następny temat:** [Aktywność i cykl życia](https://github.com/MarcinRod/AndroidLecture2025/blob/main/04%20Aktywno%C5%9B%C4%87.md)

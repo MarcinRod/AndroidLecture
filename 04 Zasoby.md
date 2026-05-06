@@ -1,13 +1,13 @@
-# 🗂️ Zasoby aplikacji w Androidzie i Compose
+# Zasoby aplikacji w Androidzie i Compose
 
-## 🔹 Co to są zasoby?
+## Co to są zasoby?
 
 **Zasoby** (resources) to wszystkie dodatkowe pliki i dane, które aplikacja wykorzystuje poza kodem źródłowym. Przykłady to: teksty, kolory, obrazy, rozmiary. W Androidzie przechowuje się je w katalogu `res/`.
 
 ---
 
 
-## 📦 Typy zasobów w Androidzie
+## Typy zasobów w Androidzie
 
 Android obsługuje wiele rodzajów zasobów, które możesz wykorzystać w aplikacji:
 
@@ -29,7 +29,7 @@ Android obsługuje wiele rodzajów zasobów, które możesz wykorzystać w aplik
 > **Uwaga:**  
 > Zasoby oznaczone kursywą *(...)* są typowe dla klasycznego Androida (View System) i nie są wykorzystywane lub są wykorzystywane marginalnie w Jetpack Compose. W Compose UI, układy, animacje i style definiuje się bezpośrednio w kodzie Kotlin.
 
-## 🏷️ Identyfikator zasobu i klasa `R`
+## Identyfikator zasobu i klasa `R`
 
 Każdy zasób w Androidzie otrzymuje **unikalny identyfikator** (ID), który jest generowany automatycznie podczas kompilacji i przechowywany w klasie `R`.
 
@@ -59,7 +59,7 @@ val padding = dimensionResource(id = R.dimen.padding_large)
 Podczas kompilacji Android przypisuje każdemu zasobowi unikalny numer ID i generuje klasę `R`, która pozwala na łatwe i bezpieczne odwoływanie się do zasobów w kodzie – bez konieczności podawania ścieżek czy nazw plików jako tekst.
 
 
-## 📝 Przechowywanie tekstu w zasobach
+## Przechowywanie tekstu w zasobach
 
 Wszystkie napisy, które pojawiają się w aplikacji (np. tytuły, opisy, komunikaty, teksty przycisków), powinny być przechowywane w pliku `res/values/strings.xml`. Dzięki temu:
 
@@ -84,7 +84,7 @@ Text(text = stringResource(id = R.string.greeting))
 
 ---
 
-## 🖼️ Obrazy: drawable vs mipmap
+## Obrazy: drawable vs mipmap
 
 - **`drawable/`** – tutaj umieszczamy obrazy używane w aplikacji (np. ilustracje, tła, ikony przycisków). Obsługuje grafiki rastrowe (PNG, JPG) i wektorowe (XML).
 - **`mipmap/`** – katalog przeznaczony wyłącznie na ikony aplikacji. Android automatycznie wybiera odpowiednią wersję w zależności od rozdzielczości ekranu.
@@ -100,7 +100,7 @@ Ikona aplikacji jest ustawiana w pliku manifestu i nie powinna być używana w U
 
 ---
 
-## 🌍 Zasoby alternatywne
+## Zasoby alternatywne
 
 Android pozwala tworzyć **alternatywne wersje zasobów** dla różnych języków, rozdzielczości, orientacji ekranu, trybu ciemnego/jasnego i innych cech urządzenia. Dzięki temu aplikacja może automatycznie dopasować się do urządzenia i preferencji użytkownika, bez konieczności pisania dodatkowego kodu do obsługi tych wariantów.
 
@@ -127,7 +127,7 @@ Np. jeśli użytkownik ma ustawiony język polski, system użyje `strings.xml` z
 
 ---
 
-## ⚠️ Wskazówki
+## Wskazówki
 
 - **Zawsze korzystaj z funkcji Compose do pobierania zasobów** (`stringResource`, `colorResource`, `painterResource`, `dimensionResource`).
 - **Unikaj trzymania Context** 
@@ -136,10 +136,10 @@ Np. jeśli użytkownik ma ustawiony język polski, system użyje `strings.xml` z
 
 ---
 
-## 📚 Dokumentacja
+## Dokumentacja
 
 - [Oficjalna dokumentacja Android – Resources](https://developer.android.com/guide/topics/resources/providing-resources)
 - [Jetpack Compose – Resources](https://developer.android.com/jetpack/compose/resources)
 
 ---
-### 🧭 **Następny temat:** [Funkcje kompozycyjne](https://github.com/MarcinRod/AndroidLecture2025/blob/main/05%20Funkcje%20kompozycyjne.md)
+### **Następny temat:** [Funkcje kompozycyjne](https://github.com/MarcinRod/AndroidLecture2025/blob/main/05%20Funkcje%20kompozycyjne.md)
