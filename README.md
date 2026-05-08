@@ -22,7 +22,7 @@
    Navigation Compose, NavHost, NavController, przekazywanie argumentów, zagnieżdżone grafy, bezpieczeństwo typów tras.
 
 ### [7. Intencje](https://github.com/MarcinRod/AndroidLecture2025/blob/main/07%20Intencje.md)  
-   Explicit/Implicit Intent, przekazywanie danych, Parcelable/Serializable, filtry intencji, intencje a Navigation Compose.
+   Explicit/Implicit Intent, przekazywanie danych, filtry intencji, intencje a Navigation Compose.
 
 --- 
 
@@ -34,11 +34,13 @@
 ### [8. Manifest i pozwolenia](https://github.com/MarcinRod/AndroidLecture2025/blob/main/08%20Manifest%20i%20pozwolenia.md)  
    AndroidManifest.xml, deklaracja komponentów, uprawnienia, system pozwoleń, runtime permissions, ActivityResultContracts.
 
-### [9. Architektura aplikacji](https://github.com/MarcinRod/AndroidLecture2025/blob/main/09%20Architektura%20aplikacji.md)  
+### [9. Zadania w tle – Korutyny](https://github.com/MarcinRod/AndroidLecture2025/blob/main/09%20Zadania%20w%20tle%20-%20Korutyny.md)  
+   Wątki, korutyny, scope, dispatchers, launch, async, LaunchedEffect, praca w tle, dobre praktyki.
+
+### [10. Architektura aplikacji](https://github.com/MarcinRod/AndroidLecture2025/blob/main/10%20Architektura%20aplikacji.md)  
    Warstwy aplikacji (UI, ViewModel, Repository, Model), Unidirectional Data Flow, StateFlow, dobre praktyki architektoniczne.
 
-### [10. Zadania w tle – Korutyny](https://github.com/MarcinRod/AndroidLecture2025/blob/main/10%20Zadania%20w%20tle%20-%20Korutyny.md)  
-   Wątki, korutyny, scope, dispatchers, launch, async, LaunchedEffect, praca w tle, dobre praktyki.
+
 
 ### [11. Bazy danych – Room](https://github.com/MarcinRod/AndroidLecture2025/blob/main/11%20Bazy%20danych%20-%20Room.md)  
    Room, Entity, DAO, Database, singleton, operacje na bazie, Flow, TypeConverter, przykłady użycia.
@@ -51,10 +53,10 @@ Repozytorium ma dwie gałęzie - gałąź master pokazuje różnice między pode
 ---
 
 ### [12. Komunikacja przez Internet – Retrofit](https://github.com/MarcinRod/AndroidLecture2025/blob/main/12%20Komunikacja%20przez%20Internet%20-%20Retorfit.md)  
-   Pozwolenia, API, REST, JSON, Retrofit, OkHttp, Moshi, model danych, interfejs API, Call, korutyny, ViewModel.
+   Pozwolenia, API, REST, JSON, Retrofit, OkHttp, Moshi, model danych, interfejs API.
 
 ### [13. Platforma Firebase](https://github.com/MarcinRod/AndroidLecture2025/blob/main/13%20Platforma%20Firebase.md)  
-   Usługi Firebase, konfiguracja, Authentication, Realtime Database, struktura bazy, referencje, zapis i odczyt danych.
+   Usługi Firebase, konfiguracja, Authentication, Firestore, Realtime Database, struktura bazy, referencje, zapis i odczyt danych.
    
 --- 
 
