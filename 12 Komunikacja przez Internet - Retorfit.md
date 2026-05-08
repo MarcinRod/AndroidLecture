@@ -6,7 +6,7 @@ Współczesne aplikacje mobilne bardzo często komunikują się z serwerami prze
 
 ## Pozwolenie na dostęp do Internetu
 
-Aby aplikacja mogła komunikować się z serwerem przez Internet, musisz dodać odpowiednie pozwolenie w pliku `AndroidManifest.xml`:
+Aby aplikacja mogła komunikować się z serwerem przez Internet, należy dodać odpowiednie pozwolenie w pliku `AndroidManifest.xml`:
 
 ```xml
 <uses-permission android:name="android.permission.INTERNET" />
@@ -30,28 +30,49 @@ To pozwolenie jest wymagane w każdej aplikacji, która korzysta z Internetu –
 
 ## Popularne biblioteki do komunikacji
 
-- **Retrofit** – najpopularniejsza biblioteka do obsługi REST API w Androidzie. Umożliwia łatwe wykonywanie zapytań HTTP i mapowanie odpowiedzi na obiekty Kotlin/Java.
+- **Retrofit** – najpopularniejsza biblioteka do obsługi REST API w Androidzie. Umożliwia łatwe wykonywanie zapytań HTTP i odwzorowywanie odpowiedzi na obiekty Kotlin.
 - **OkHttp** – niskopoziomowa biblioteka HTTP, na której opiera się Retrofit.
 
 ---
-## Retrofit – podstawy i przykład użycia z konwerterem Moshi
 
-**Retrofit** to najpopularniejsza biblioteka do komunikacji z REST API w Androidzie. Pozwala w prosty sposób wykonywać zapytania HTTP i mapować odpowiedzi JSON na obiekty Kotlin/Java. Retrofit obsługuje różne konwertery JSON, np. GSON lub Moshi.
+## Retrofit
+
+**Retrofit** to najpopularniejsza biblioteka do komunikacji z REST API w Androidzie. Pozwala wykonywać zapytania HTTP i odwzorowywać odpowiedzi JSON na obiekty Kotlin. Obsługuje wymienne konwertery JSON — w tym Moshi oraz kotlinx-serialization.
 
 ---
 
-### Dodanie zależności (build.gradle)
+### Zależności (build.gradle.kts)
 
-```groovy
-implementation "com.squareup.retrofit2:retrofit:2.9.0"
-implementation "com.squareup.retrofit2:converter-moshi:2.9.0"
-implementation "com.squareup.moshi:moshi:1.15.0"
-implementation "com.squareup.moshi:moshi-kotlin:1.15.0"
+**Z konwerterem Moshi:**
+```kotlin
+implementation("com.squareup.retrofit2:retrofit:2.11.0")
+implementation("com.squareup.retrofit2:converter-moshi:2.11.0")
+implementation("com.squareup.moshi:moshi:1.15.1")
+implementation("com.squareup.moshi:moshi-kotlin:1.15.1")
+// Rejestrowanie zapytań HTTP – tylko w wariancie debug
+debugImplementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
+```
+
+**Z konwerterem kotlinx-serialization:**
+```kotlin
+plugins {
+    kotlin("plugin.serialization") version "2.0.0"
+}
+
+dependencies {
+    implementation("com.squareup.retrofit2:retrofit:2.11.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.3")
+    implementation("com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:1.0.0")
+    // Rejestrowanie zapytań HTTP – tylko w wariancie debug
+    debugImplementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
+}
 ```
 
 ---
 
-### Definicja modelu danych
+### Model danych
+
+#### Z konwerterem Moshi
 
 ```kotlin
 import com.squareup.moshi.Json
@@ -60,191 +81,194 @@ import com.squareup.moshi.JsonClass
 @JsonClass(generateAdapter = true)
 data class Produkt(
     val id: Int,
-    val nazwa: String,
-    val cena: Double
-)
-```
-
-#### Wyjaśnienie adnotacji Moshi
-
-- **@JsonClass(generateAdapter = true)**  
-  Ta adnotacja informuje Moshi, aby automatycznie wygenerował adapter do serializacji i deserializacji tej klasy (czyli zamiany obiektu Kotlin na JSON i odwrotnie). Jest wymagana, aby Moshi poprawnie obsłużył klasy danych w Kotlinie.
-
-- **@Json(name = "nazwa_pola")**  
-  Pozwala zmapować pole w klasie na inne pole w JSON-ie, jeśli nazwy się różnią.
-
-**Przykład z użyciem @Json:**
-```kotlin
-@JsonClass(generateAdapter = true)
-data class Produkt(
-    val id: Int,
     @Json(name = "product_name") val nazwa: String,
-    val cena: Double
+    val cena: Double,
+    val opis: String? = null
 )
 ```
-W tym przykładzie pole `nazwa` w Kotlinie zostanie zmapowane na pole `product_name` w JSON-ie.
 
-#### Obsługa opcjonalnych pól w obiektach Moshi
+**Adnotacje Moshi:**
+- `@JsonClass(generateAdapter = true)` – powoduje wygenerowanie adaptera do zamiany obiektu na JSON i odwrotnie. Jest wymagana do poprawnej obsługi klas danych w Kotlinie.
+- `@Json(name = "klucz")` – przypisuje pole klasy do pola o innej nazwie w JSON-ie.
+- Pola z typem `String?` i wartością domyślną `null` są opcjonalne — jeśli nie pojawią się w JSON-ie, przyjmą wartość `null`.
 
-Jeśli pole w JSON-ie może być opcjonalne (może nie występować lub mieć wartość `null`), w modelu danych w Kotlinie należy oznaczyć je jako typ nullable (`?`) i (opcjonalnie) ustawić wartość domyślną.
+**Ważne:** jeśli pole nie jest nullable i nie ma wartości domyślnej, a zabraknie go w JSON-ie, Moshi zgłosi błąd podczas odczytu.
 
-**Przykład:**
+#### Z kotlinx-serialization
+
 ```kotlin
-@JsonClass(generateAdapter = true)
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class Produkt(
     val id: Int,
-    val nazwa: String,
+    @SerialName("product_name") val nazwa: String,
     val cena: Double,
-    val opis: String? = null // pole opcjonalne, może być null jeśli nie ma go w JSON-ie
+    val opis: String? = null
 )
 ```
 
-- Jeśli pole `opis` nie pojawi się w odpowiedzi z serwera, Moshi automatycznie ustawi je na `null`.
-- Możesz także ustawić inną wartość domyślną, np. `val opis: String? = "brak opisu"`.
-
-**Ważne:**  
-Jeśli pole w modelu nie jest oznaczone przez `?` i nie ma wartości domyślnej, a nie pojawi się w JSON-ie, Moshi zgłosi błąd podczas deserializacji.
+**Adnotacje kotlinx-serialization:**
+- `@Serializable` – oznacza klasę do serializacji; adapter jest generowany w czasie kompilacji przez wtyczkę kompilatora.
+- `@SerialName("klucz")` – odpowiednik `@Json(name = ...)` z Moshi.
+- Pola z wartością domyślną są opcjonalne — jeśli nie pojawią się w JSON-ie, przyjmą podaną wartość.
 
 ---
 
 ### Definicja interfejsu API
 
-Interfejs API w Retrofit to miejsce, gdzie deklarujesz metody odpowiadające zapytaniom HTTP, które chcesz wysyłać do serwera. Każda metoda jest opisana odpowiednią adnotacją (np. `@GET`, `@POST`, `@PUT`, `@DELETE`) i może przyjmować parametry, które zostaną przekazane do zapytania.
+Interfejs API w Retrofit zawiera metody odpowiadające poszczególnym zapytaniom HTTP. Każda metoda jest oznaczona adnotacją określającą typ zapytania i ścieżkę punktu końcowego.
 
 **Najważniejsze adnotacje Retrofit:**
-- `@GET("endpoint")` – zapytanie typu GET (pobieranie danych).
-- `@POST("endpoint")` – zapytanie typu POST (wysyłanie danych).
-- `@PUT("endpoint")` – zapytanie typu PUT (aktualizacja danych).
-- `@DELETE("endpoint")` – zapytanie typu DELETE (usuwanie danych).
+- `@GET("endpoint")` – zapytanie pobierające dane.
+- `@POST("endpoint")` – zapytanie wysyłające dane.
+- `@PUT("endpoint")` – zapytanie aktualizujące dane.
+- `@DELETE("endpoint")` – zapytanie usuwające dane.
 - `@Query("param")` – parametr przekazywany w adresie URL (np. `?id=1`).
 - `@Path("param")` – parametr dynamiczny w ścieżce URL (np. `/produkty/{id}`).
-- `@Body` – przesyłanie obiektu jako treści zapytania (np. w POST).
+- `@Body` – obiekt przesyłany jako treść zapytania (np. w POST).
 
 **Przykład interfejsu API:**
 ```kotlin
+import retrofit2.Response
 import retrofit2.http.*
 
 interface ApiService {
     @GET("produkty")
-    suspend fun getProdukty(): List<Produkt>
+    suspend fun getProdukty(): Response<List<Produkt>>
 
-    @GET("produkt")
-    suspend fun getProduktById(@Query("id") id: Int): Produkt
+    @GET("produkty/{id}")
+    suspend fun getProduktById(@Path("id") id: Int): Response<Produkt>
 
     @POST("produkty")
-    suspend fun dodajProdukt(@Body produkt: Produkt): Produkt
+    suspend fun dodajProdukt(@Body produkt: Produkt): Response<Produkt>
 
     @PUT("produkty/{id}")
-    suspend fun aktualizujProdukt(@Path("id") id: Int, @Body produkt: Produkt): Produkt
+    suspend fun aktualizujProdukt(@Path("id") id: Int, @Body produkt: Produkt): Response<Produkt>
 
     @DELETE("produkty/{id}")
-    suspend fun usunProdukt(@Path("id") id: Int)
+    suspend fun usunProdukt(@Path("id") id: Int): Response<Unit>
 }
 ```
 
-**Wyjaśnienie:**
-- `@GET("produkty")` – pobiera listę produktów.
-- `@GET("produkt")` z `@Query("id")` – pobiera produkt o konkretnym ID (np. `/produkt?id=5`).
-- `@POST("produkty")` z `@Body` – wysyła nowy produkt do serwera.
-- `@PUT("produkty/{id}")` z `@Path` i `@Body` – aktualizuje produkt o danym ID.
-- `@DELETE("produkty/{id}")` z `@Path` – usuwa produkt o danym ID.
-
-### Zwracanie `Call<T>` w interfejsie Retrofit
-
-Oprócz funkcji typu `suspend fun` (dla korutyn), w Retrofit możesz zadeklarować metody, które zwracają obiekt `Call<T>`. Pozwala to na asynchroniczne lub synchroniczne wykonanie zapytania bez  użycia korutyn. 
-
-**Przykład interfejsu z Call:**
-```kotlin
-import retrofit2.Call
-import retrofit2.http.GET
-import retrofit2.http.Query
-
-interface ApiService {
-    @GET("produkty")
-    fun getProdukty(): Call<List<Produkt>>
-
-    @GET("produkt")
-    fun getProduktById(@Query("id") id: Int): Call<Produkt>
-}
-```
-
-**Wywołanie zapytania z użyciem Call:**
-```kotlin
-val call = api.getProdukty()
-call.enqueue(object : Callback<List<Produkt>> {
-    override fun onResponse(call: Call<List<Produkt>>, response: Response<List<Produkt>>) {
-        if (response.isSuccessful) {
-            val produkty = response.body()
-            // obsługa danych
-        
-        }
-    }
-    override fun onFailure(call: Call<List<Produkt>>, t: Throwable) {
-        // obsługa błędu
-    }
-})
-```
-
-**Najważniejsze cechy Call:**
-- `Call<T>` pozwala na ręczne zarządzanie wywołaniem (możesz anulować, ponowić, wykonać synchronicznie lub asynchronicznie).
-- Użycie `enqueue()` wykonuje zapytanie asynchronicznie (w tle).
-- Użycie `execute()` wykonuje zapytanie synchronicznie (blokuje wątek – niezalecane w UI!).
-
+Opakowanie zwracanego typu w `Response<T>` pozwala odczytać kod statusu HTTP (`response.code()`) oraz treść błędu (`response.errorBody()`). Retrofit nie zgłasza wyjątku dla błędów serwera (np. `404`, `500`) — bez `Response<T>` nie można ich odróżnić od prawidłowej odpowiedzi.
 
 ---
 
-### Tworzenie instancji Retrofit z konwerterem Moshi
+### Tworzenie instancji Retrofit
 
-Aby korzystać z Retrofit w aplikacji, musisz utworzyć instancję Retrofit i wskazać:
-- **adres bazowy API** (`baseUrl`),
-- **konwerter JSON** (np. Moshi lub Gson),
-- (opcjonalnie) dodatkowe ustawienia, np. dotyczące klienta OkHttp.
+Instancję Retrofit najlepiej przechowywać jako singleton (np. w obiekcie towarzyszącym lub klasie `Application`), aby nie tworzyć jej wielokrotnie.
 
-**Przykład tworzenia instancji Retrofit z Moshi:**
+#### Z konwerterem Moshi
+
 ```kotlin
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import com.squareup.moshi.Moshi
+import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 
-// Tworzenie instancji Moshi (możesz dodać własne adaptery, jeśli potrzebujesz)
-val moshi = Moshi.Builder().build()
-
-// Tworzenie instancji Retrofit
-val retrofit = Retrofit.Builder()
-    .baseUrl("https://twoje-api.pl/api/") // adres bazowy API
-    .addConverterFactory(MoshiConverterFactory.create(moshi)) // konwerter JSON
+val moshi = Moshi.Builder()
+    .addLast(KotlinJsonAdapterFactory())
     .build()
 
-// Utworzenie implementacji interfejsu API
+val retrofit = Retrofit.Builder()
+    .baseUrl("https://twoje-api.pl/api/") // adres musi kończyć się ukośnikiem /
+    .addConverterFactory(MoshiConverterFactory.create(moshi))
+    .build()
+
 val api = retrofit.create(ApiService::class.java)
 ```
 
-**Wskazówki:**
-- `baseUrl` musi kończyć się ukośnikiem `/`.
-- Możesz dodać własnego klienta OkHttp, np. z interceptorami do logowania lub obsługi tokenów:
-  ```kotlin
-  import okhttp3.OkHttpClient
-  val client = OkHttpClient.Builder()
-      .addInterceptor(MyInterceptor())
-      .build()
+#### Z kotlinx-serialization
 
-  val retrofit = Retrofit.Builder()
-      .baseUrl("https://twoje-api.pl/api/")
-      .addConverterFactory(MoshiConverterFactory.create(moshi))
-      .client(client)
-      .build()
-  ```
-- Instancję Retrofit najlepiej przechowywać jako singleton (np. w obiekcie lub klasie Application), aby nie tworzyć jej wielokrotnie.
+```kotlin
+import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
+import kotlinx.serialization.json.Json
+import okhttp3.MediaType.Companion.toMediaType
 
-**Dlaczego warto korzystać z Moshi?**
-- Moshi jest szybki, bezpieczny i dobrze wspiera Kotlin (np. typy nullable, data class, adnotacje).
-- Pozwala łatwo mapować pola JSON na pola w modelu danych.
+val json = Json {
+    ignoreUnknownKeys = true  // ignoruje nieznane pola w JSON-ie
+    coerceInputValues = true  // dla brakujących pól non-nullable używa wartości domyślnej
+}
+
+val retrofit = Retrofit.Builder()
+    .baseUrl("https://twoje-api.pl/api/")
+    .addConverterFactory(json.asConverterFactory("application/json; charset=UTF8".toMediaType()))
+    .build()
+
+val api = retrofit.create(ApiService::class.java)
+```
+
+> `ignoreUnknownKeys = true` jest szczególnie przydatne, gdy serwer zwraca więcej pól niż zdefiniowano w modelu.
+
+#### Rejestrowanie zapytań HTTP
+
+Podczas tworzenia aplikacji przydatne jest rejestrowanie treści zapytań i odpowiedzi HTTP. Służy do tego `HttpLoggingInterceptor` z biblioteki OkHttp:
+
+```kotlin
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
+
+val clientBuilder = OkHttpClient.Builder()
+
+if (BuildConfig.DEBUG) {
+    val interceptor = HttpLoggingInterceptor().apply {
+        level = HttpLoggingInterceptor.Level.BODY
+    }
+    clientBuilder.addInterceptor(interceptor)
+}
+
+val client = clientBuilder.build()
+
+val retrofit = Retrofit.Builder()
+    .baseUrl("https://twoje-api.pl/api/")
+    .addConverterFactory(MoshiConverterFactory.create(moshi))
+    .client(client)
+    .build()
+```
+
+`BuildConfig.DEBUG` to stała generowana automatycznie przez system budowania — przyjmuje wartość `true` w wariancie `debug` i `false` w wariancie `release`. Dzięki temu interceptor jest dodawany tylko podczas tworzenia aplikacji i nie trafia do wersji produkcyjnej.
+
+> Nawet przy użyciu `BuildConfig.DEBUG`, zależność `logging-interceptor` powinna być zadeklarowana jako `debugImplementation` — klasa `HttpLoggingInterceptor` nie będzie wtedy dostępna w wariancie `release`, co uniemożliwia jej przypadkowe użycie.
 
 
-### Przykład użycia Retrofit w ViewModelu
+### Wzorzec Repository
 
+Zgodnie z [wytycznymi architektury Google](https://developer.android.com/topic/architecture) ViewModel nie powinien bezpośrednio korzystać z `ApiService`. Zalecanym podejściem jest wzorzec **Repository**, który stanowi warstwę pośrednią między ViewModelem a źródłem danych:
 
-Poniżej znajduje się przykładowy ViewModel, który korzysta z Retrofit (z konwerterem Moshi) oraz StateFlow do pobierania i obserwowania listy produktów. Instancja Retrofit powinna być singletonem (np. przekazywana przez konstruktor lub uzyskiwana z obiektu).
+```
+ViewModel → Repository → ApiService (Retrofit)
+```
+
+Repository odpowiada za pobieranie danych i udostępnianie ich modelowi widoku. Obsługę kodów błędów HTTP należy zamknąć wewnątrz Repository — ViewModel powinien otrzymywać gotowe dane lub wyjątek:
+
+```kotlin
+class ProduktyRepository(private val api: ApiService) {
+
+    suspend fun getProdukty(): List<Produkt> {
+        val response = api.getProdukty()
+        if (response.isSuccessful) {
+            return response.body() ?: emptyList()
+        } else {
+            throw Exception("Błąd HTTP ${response.code()}")
+        }
+    }
+
+    suspend fun dodajProdukt(produkt: Produkt): Produkt {
+        val response = api.dodajProdukt(produkt)
+        if (response.isSuccessful) {
+            return response.body() ?: throw Exception("Pusta odpowiedź serwera")
+        } else {
+            throw Exception("Błąd HTTP ${response.code()}")
+        }
+    }
+}
+```
+
+---
+
+### Przykład użycia w ViewModel
 
 ```kotlin
 import androidx.lifecycle.ViewModel
@@ -253,39 +277,54 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
-class ProduktyViewModel(private val api: ApiService) : ViewModel() {
+class ProduktyViewModel(private val repository: ProduktyRepository) : ViewModel() {
 
     private val _produkty = MutableStateFlow<List<Produkt>>(emptyList())
     val produkty: StateFlow<List<Produkt>> = _produkty
 
-    private val _error = MutableStateFlow<String?>(null)
-    val error: StateFlow<String?> = _error
+    private val _blad = MutableStateFlow<String?>(null)
+    val blad: StateFlow<String?> = _blad
 
     fun pobierzProdukty() {
         viewModelScope.launch {
             try {
-                _produkty.value = api.getProdukty()
-                _error.value = null
+                _produkty.value = repository.getProdukty()
+                _blad.value = null
             } catch (e: Exception) {
-                _error.value = "Błąd pobierania danych: ${e.message}"
+                _blad.value = e.message
             }
         }
     }
 }
 ```
 
-**Wskazówki:**
-- Instancję `ApiService` najlepiej przekazywać do ViewModelu przez konstruktor.
-- Do obsługi błędów możesz wykorzystać osobny StateFlow.
-- Wszystkie operacje sieciowe wykonuj w korutynach (`viewModelScope.launch`) lub z wykorzystaniem `Call`.
+Stan jest obserwowany w funkcji kompozycyjnej przez `collectAsStateWithLifecycle()`:
+
+```kotlin
+val produkty by viewModel.produkty.collectAsStateWithLifecycle()
+val blad by viewModel.blad.collectAsStateWithLifecycle()
+
+if (blad != null) {
+    Text("Błąd: $blad")
+} else {
+    LazyColumn {
+        items(produkty) { produkt ->
+            Text(produkt.nazwa)
+        }
+    }
+}
+```
 
 ---
 
 ## Dobre praktyki
 
-- Używaj `suspend fun` w interfejsach API do współpracy z korutynami.
-- Obsługuj wyjątki (np. brak internetu, błąd serwera).
-- Przechowuj instancję Retrofit jako singleton.
+- W interfejsach API zalecane jest stosowanie `suspend fun` z opakowaniem `Response<T>`, aby odróżnić błędy sieciowe (wyjątek) od błędów HTTP (kody 4xx/5xx).
+- Obsługę kodów HTTP należy zamknąć w warstwie Repository — ViewModel powinien otrzymywać gotowe dane lub wyjątek.
+- Instancję Retrofit należy przechowywać jako singleton.
+- Zalecane jest stosowanie wzorca Repository jako warstwy pośredniej między ViewModelem a `ApiService`.
+- `HttpLoggingInterceptor` należy dodawać wyłącznie w wariancie `debug`.
+
 
 ---
 
@@ -294,7 +333,6 @@ class ProduktyViewModel(private val api: ApiService) : ViewModel() {
 - [Przykłady użycia Retrofit](https://github.com/square/retrofit/tree/master/samples)
 - [Oficjalna dokumentacja Moshi](https://github.com/square/moshi)
 
-
 ---
 
-### 🧭 **Następny temat:** [Platforma Firebase](https://github.com/MarcinRod/AndroidLecture2025/blob/main/13%20Platforma%20Firebase.md)
+### **Następny temat:** [Platforma Firebase](https://github.com/MarcinRod/AndroidLecture2025/blob/main/13%20Platforma%20Firebase.md)
