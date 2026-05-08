@@ -1,6 +1,6 @@
 # Platforma Firebase
 
-**Firebase** to platforma firmy Google oferująca zestaw narzędzi i usług do szybkiego tworzenia, rozwijania i zarządzania aplikacjami mobilnymi oraz webowymi. Dzięki Firebase możesz łatwo dodać do swojej aplikacji funkcje takie jak: baza danych w chmurze, uwierzytelnianie użytkowników, powiadomienia push, analityka, hosting i wiele innych.
+**Firebase** to platforma firmy Google oferująca zestaw narzędzi i usług do tworzenia, rozwijania i zarządzania aplikacjami mobilnymi oraz webowymi. Pozwala dodać do aplikacji funkcje takie jak baza danych w chmurze, uwierzytelnianie użytkowników, powiadomienia push, analityka, hosting i wiele innych.
 
 ---
 
@@ -21,367 +21,395 @@
 
 ## Jak zacząć korzystać z Firebase w Androidzie?
 
-1. **Załóż konto i projekt w [konsoli Firebase](https://console.firebase.google.com/).**
-2. **Dodaj aplikację Android do projektu Firebase** (pobierz plik `google-services.json`).
-3. **Dodaj zależności do pliku `build.gradle`:**
-   ```groovy
-   implementation platform('com.google.firebase:firebase-bom:32.7.0')
-   implementation 'com.google.firebase:firebase-analytics-ktx'
-   // Dodaj inne zależności w zależności od potrzeb, np.:
-   // implementation 'com.google.firebase:firebase-auth-ktx'
-   // implementation 'com.google.firebase:firebase-firestore-ktx'
-   ```
-4. **Dodaj plugin do pliku `build.gradle` (na poziomie projektu):**
-   ```groovy
-   classpath 'com.google.gms:google-services:4.4.1'
-   ```
-5. **Dodaj na końcu pliku `build.gradle` (moduł/app):**
-   ```groovy
-   apply plugin: 'com.google.gms.google-services'
-   ```
+1. **Utwórz konto i projekt w [konsoli Firebase](https://console.firebase.google.com/).**
+2. **Dodaj aplikację Android do projektu Firebase** — pobierz plik `google-services.json` i umieść go w katalogu `app/`.
+3. **Dodaj plugin i zależności do plików Gradle (Kotlin DSL):**
+
+```kotlin
+// build.gradle.kts (projekt)
+plugins {
+    id("com.google.gms.google-services") version "4.4.2" apply false
+}
+```
+
+```kotlin
+// build.gradle.kts (moduł app)
+plugins {
+    id("com.google.gms.google-services")
+}
+
+dependencies {
+    // BOM — zarządza wersjami wszystkich bibliotek Firebase
+    implementation(platform("com.google.firebase:firebase-bom:33.7.0"))
+
+    // Dodaj wybrane usługi (bez podawania wersji — BOM ją określa)
+    implementation("com.google.firebase:firebase-analytics")
+    implementation("com.google.firebase:firebase-auth")
+    implementation("com.google.firebase:firebase-firestore")
+    // implementation("com.google.firebase:firebase-database")  // Realtime Database (opcjonalnie)
+}
+```
+
+> **BOM (Bill of Materials)** — deklaracja `platform(...)` pozwala zarządzać wersjami wszystkich bibliotek Firebase centralnie. Przy aktualizacji Firebase wystarczy zmienić numer BOM — wersje poszczególnych zależności są dobierane automatycznie.
 
 ---
 
 
 
-## Firebase Authentication – uwierzytelnianie użytkowników
+## Firebase Authentication — uwierzytelnianie użytkowników
 
-**Firebase Authentication** umożliwia szybkie i bezpieczne dodanie logowania do aplikacji. Obsługuje wiele metod uwierzytelniania, m.in. e-mail i hasło, Google, Facebook, anonimowe konta i inne.
+**Firebase Authentication** umożliwia bezpieczne dodanie logowania do aplikacji. Obsługuje wiele metod uwierzytelniania: e-mail i hasło, Google, Facebook, konta anonimowe i inne. Konfiguracji wybranych metod logowania dokonuje się w [konsoli Firebase](https://console.firebase.google.com/).
 
-### Jak dodać Firebase Authentication do projektu?
+### Obiekt `FirebaseAuth`
 
-1. Dodaj zależność do pliku `build.gradle`:
-   ```groovy
-   implementation 'com.google.firebase:firebase-auth-ktx'
-   ```
+`FirebaseAuth` to główny obiekt obsługi uwierzytelniania. Instancję pobiera się przez `FirebaseAuth.getInstance()`. Najważniejsze właściwości i metody:
 
-2. Skonfiguruj wybrane metody logowania w [konsoli Firebase](https://console.firebase.google.com/) (np. e-mail, Google).
+| Element | Opis |
+|---|---|
+| `currentUser` | Aktualnie zalogowany użytkownik lub `null` |
+| `createUserWithEmailAndPassword()` | Rejestracja przez e-mail i hasło |
+| `signInWithEmailAndPassword()` | Logowanie przez e-mail i hasło |
+| `signOut()` | Wylogowanie |
+| `sendPasswordResetEmail()` | Wysłanie e-maila do resetowania hasła |
+| `addAuthStateListener()` | Nasłuchiwanie zmian stanu zalogowania |
 
----
+### Podstawowe operacje — wersja z korutynami (`await`)
 
-### Przykład: Rejestracja i logowanie użytkownika przez e-mail i hasło
+Biblioteka `firebase-auth` udostępnia rozszerzenia `.await()` (z pakietu `kotlinx-coroutines-play-services`), które pozwalają wywoływać operacje Firebase jak zwykłe funkcje `suspend` — bez zagnieżdżonych listenerów (stare podejście).
+
+```kotlin
+// build.gradle.kts — dodatkowa zależność dla await()
+implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.8.1")
+```
 
 ```kotlin
 import com.google.firebase.auth.FirebaseAuth
+import kotlinx.coroutines.tasks.await
 
 val auth = FirebaseAuth.getInstance()
 
 // Rejestracja nowego użytkownika
-auth.createUserWithEmailAndPassword(email, password)
-    .addOnCompleteListener { task ->
-        if (task.isSuccessful) {
-            // Rejestracja zakończona sukcesem
-            val user = auth.currentUser
-        } else {
-            // Obsługa błędu
-        }
-    }
+suspend fun register(email: String, password: String) {
+    val result = auth.createUserWithEmailAndPassword(email, password).await()
+    val user = result.user  // zalogowany użytkownik po rejestracji
+}
 
 // Logowanie użytkownika
-auth.signInWithEmailAndPassword(email, password)
-    .addOnCompleteListener { task ->
-        if (task.isSuccessful) {
-            // Logowanie zakończone sukcesem
-            val user = auth.currentUser
-        } else {
-            // Obsługa błędu
+suspend fun signIn(email: String, password: String) {
+    val result = auth.signInWithEmailAndPassword(email, password).await()
+    val user = result.user
+}
+
+// Wylogowanie
+fun signOut() {
+    auth.signOut()
+}
+
+// Sprawdzenie czy użytkownik jest zalogowany
+val isLoggedIn = auth.currentUser != null
+```
+
+Obie metody — `createUserWithEmailAndPassword()` i `signInWithEmailAndPassword()` — zwracają `Task<AuthResult>`. Po wywołaniu `.await()` otrzymuje się obiekt `AuthResult`, który zawiera właściwość `user` typu `FirebaseUser?`. Obiekt `FirebaseUser` reprezentuje zalogowanego użytkownika i udostępnia m.in. `uid` (unikalny identyfikator), `email` oraz `displayName`.
+
+> Funkcje `suspend` z `.await()` należy wywoływać wewnątrz korutyny (np. `viewModelScope.launch { }`) i opakowywać w `try/catch` — wyjątek jest rzucany gdy operacja się nie powiedzie (np. błędne hasło, brak połączenia).
+
+### Obserwowanie stanu zalogowania jako `Flow`
+
+Stan zalogowania zmienia się asynchronicznie (np. token wygasa, użytkownik wylogowuje się z innego urządzenia). Można go opakować w `callbackFlow`, aby obserwować go jako `Flow` w ViewModelu:
+
+```kotlin
+fun observeAuthState(): Flow<Boolean> = callbackFlow {
+    val listener = FirebaseAuth.AuthStateListener { auth ->
+        trySend(auth.currentUser != null)
+    }
+    FirebaseAuth.getInstance().addAuthStateListener(listener)
+    awaitClose {
+        FirebaseAuth.getInstance().removeAuthStateListener(listener)
+    }
+}
+```
+
+**Więcej informacji:**
+- [Firebase Authentication — dokumentacja](https://firebase.google.com/docs/auth)
+
+---
+
+## Cloud Firestore — baza danych w chmurze
+
+**Cloud Firestore** to nowoczesna, skalowalna baza danych NoSQL oferowana przez Firebase. Jest zalecanym następcą Realtime Database dla nowych projektów. Dane przechowywane są w **dokumentach** pogrupowanych w **kolekcje**, co ułatwia modelowanie złożonych struktur danych.
+
+### Struktura danych: kolekcje i dokumenty
+
+Zamiast jednego drzewa JSON (jak w Realtime Database), Firestore organizuje dane hierarchicznie:
+
+```
+kolekcja "produkty"
+├── dokument "id1"  →  { nazwa: "Kawa", cena: 12.99 }
+├── dokument "id2"  →  { nazwa: "Herbata", cena: 8.50 }
+└── ...
+```
+
+- **Kolekcja** — zbiór dokumentów (odpowiednik tabeli, ale bez sztywnego schematu).
+- **Dokument** — obiekt z polami i wartościami; może zawierać podkolekcje.
+- Identyfikatory dokumentów mogą być generowane automatycznie lub ustalane ręcznie.
+
+### Klasa danych dla Firestore
+
+Firestore przechowuje dokumenty jako mapy klucz–wartość. Przy zapisie obiekt klasy danych jest automatycznie konwertowany na taką mapę (nazwy właściwości stają się kluczami pól dokumentu), a przy odczycie — odwrotnie. Klasa danych musi mieć domyślny (bezparametrowy) konstruktor i publiczne właściwości z wartościami domyślnymi:
+
+```kotlin
+data class Product(
+    val id: String = "",
+    val name: String = "",
+    val price: Double = 0.0
+)
+```
+
+> Pole `id` jest zwyczajowo przechowywane w obiekcie dla wygody, ale nie jest zapisywane jako pole dokumentu w Firestore — identyfikator dokumentu jest zarządzany osobno przez bazę. Przy odczycie przez `toObject()` / `toObjects()` pole `id` pozostaje pustym stringiem, chyba że zostanie wypełnione ręcznie na podstawie `DocumentSnapshot.id`.
+
+### CRUD — operacje na danych
+
+Firestore udostępnia metody zwracające `Task<T>`, które można zamieniać na korutyny przez `.await()`. Do zapisu i odczytu danych bezpośrednio używa się klasy danych — Firestore traktuje ją jak mapę.
+
+```kotlin
+import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.coroutines.tasks.await
+
+val db = FirebaseFirestore.getInstance()
+
+// Zapis dokumentu (z automatycznym id)
+suspend fun addProduct(product: Product) {
+    db.collection("produkty").add(product).await()
+}
+
+// Zapis dokumentu z określonym id
+suspend fun saveProduct(product: Product) {
+    db.collection("produkty").document(product.id).set(product).await()
+}
+
+// Odczyt jednorazowy (pojedynczy dokument)
+suspend fun getProduct(id: String): Product? {
+    val snapshot = db.collection("produkty").document(id).get().await()
+    return snapshot.toObject(Product::class.java)?.copy(id = snapshot.id)
+}
+
+// Aktualizacja wybranych pól (bez nadpisania całego dokumentu)
+suspend fun updatePrice(id: String, newPrice: Double) {
+    db.collection("produkty").document(id)
+        .update("price", newPrice).await()
+}
+
+// Usunięcie dokumentu
+suspend fun deleteProduct(id: String) {
+    db.collection("produkty").document(id).delete().await()
+}
+```
+
+### Obserwowanie zmian w czasie rzeczywistym — `callbackFlow`
+
+Firestore umożliwia nasłuchiwanie zmian w kolekcji przez `addSnapshotListener`. Można to opakować w `callbackFlow`, aby obserwować dane jako `Flow` w architekturze MVVM:
+
+```kotlin
+fun observeProductsByMaxPrice(maxPrice: Double): Flow<List<Product>> = callbackFlow {
+    val listener = db.collection("produkty")
+        .whereLessThanOrEqualTo("price", maxPrice)
+        .addSnapshotListener { snapshot, error ->
+            if (error != null) {
+                close(error)  // zamknięcie strumienia z błędem
+                return@addSnapshotListener
+            }
+            val products = snapshot?.documents?.mapNotNull { doc ->
+                doc.toObject(Product::class.java)?.copy(id = doc.id)
+            } ?: emptyList()
+            trySend(products)
+        }
+
+    awaitClose { listener.remove() }  // wyrejestrowanie listenera
+}
+```
+
+- `whereLessThanOrEqualTo`, `whereEqualTo`, `orderBy` — metody filtrowania i sortowania zapytań.
+- `toObject(Product::class.java)` — deserializacja dokumentu na klasę danych (Firestore traktuje dokument jak mapę).
+- `copy(id = doc.id)` — uzupełnienie pola `id` identyfikatorem dokumentu z bazy.
+- `close(error)` — zamknięcie strumienia w przypadku błędu.
+
+#### Krótsza wersja z funkcją `snapshots()`
+
+Biblioteka `firebase-firestore` udostępnia funkcję rozszerzającą `snapshots()`, która automatycznie opakowuje `addSnapshotListener` w `callbackFlow`. Pozwala to na uproszczenie kodu:
+
+```kotlin
+import com.google.firebase.firestore.snapshots
+import kotlinx.coroutines.flow.map
+
+fun observeProductsByMaxPrice(maxPrice: Double): Flow<List<Product>> =
+    db.collection("produkty")
+        .whereLessThanOrEqualTo("price", maxPrice)
+        .snapshots()
+        .map { snapshot ->
+            snapshot.documents.mapNotNull { doc ->
+                doc.toObject(Product::class.java)?.copy(id = doc.id)
+            }
+        }
+```
+
+> `snapshots()` jest dostępna bez dodatkowych zależności — jest częścią `firebase-firestore`. Wewnętrznie działa tak samo jak ręczne `callbackFlow` z `awaitClose { listener.remove() }`, ale eliminuje powtarzalny kod.
+
+### Integracja z MVVM — repozytorium i ViewModel
+
+```kotlin
+// Repozytorium
+interface ProductRepository {
+    fun observeAll(): Flow<List<Product>>
+    suspend fun add(product: Product)
+    suspend fun delete(id: String)
+}
+
+class FirestoreProductRepository : ProductRepository {
+    private val db = FirebaseFirestore.getInstance()
+
+    override fun observeAll(): Flow<List<Product>> =
+        db.collection("produkty")
+            .snapshots()
+            .map { snapshot ->
+                snapshot.documents.mapNotNull { doc ->
+                    doc.toObject(Product::class.java)?.copy(id = doc.id)
+                }
+            }
+
+    override suspend fun add(product: Product) {
+        db.collection("produkty").add(product).await()
+    }
+
+    override suspend fun delete(id: String) {
+        db.collection("produkty").document(id).delete().await()
+    }
+}
+
+// ViewModel
+class ProductViewModel(private val repository: ProductRepository) : ViewModel() {
+
+    val products: StateFlow<List<Product>> = repository.observeAll()
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5_000),
+            initialValue = emptyList()
+        )
+
+    fun addProduct(product: Product) {
+        viewModelScope.launch {
+            try { repository.add(product) }
+            catch (e: Exception) { /* obsługa błędu */ }
         }
     }
-```
-#### Obiekt FirebaseAuth
-
-`FirebaseAuth` to główny obiekt służący do obsługi uwierzytelniania użytkowników w Firebase. Pozwala na rejestrację, logowanie, wylogowywanie, resetowanie hasła oraz zarządzanie aktualnym użytkownikiem. Instancję tego obiektu uzyskujesz przez `FirebaseAuth.getInstance()`.  
-Dzięki niemu możesz łatwo sprawdzić, czy użytkownik jest zalogowany (`auth.currentUser`), pobrać jego dane lub wykonać operacje związane z kontem.
-
-Przykład sprawdzenia, czy użytkownik jest zalogowany:
-```kotlin
-val auth = FirebaseAuth.getInstance()
-val user = auth.currentUser
-if (user != null) {
-    // Użytkownik jest zalogowany
-} else {
-    // Brak zalogowanego użytkownika
-}
-```
----
-
-### Najważniejsze cechy Firebase Authentication
-
-- Obsługa wielu metod logowania (e-mail, Google, Facebook, Apple, anonimowe i inne).
-- Prosta integracja z aplikacją.
-- Automatyczne zarządzanie sesją użytkownika.
-- Możliwość resetowania hasła, weryfikacji e-maila, zmiany danych użytkownika.
-
-**Więcej informacji:**  
-- [Firebase Authentication – dokumentacja](https://firebase.google.com/docs/auth)
-
----
-
-## Firebase Realtime Database – baza danych czasu rzeczywistego
-
-**Firebase Realtime Database** to chmurowa baza danych NoSQL, która umożliwia przechowywanie i synchronizację danych pomiędzy użytkownikami w czasie rzeczywistym. Każda zmiana w bazie jest natychmiast widoczna dla wszystkich podłączonych klientów.
-
-### Jak dodać Firebase Realtime Database do projektu?
-
-1. Dodaj zależność do pliku `build.gradle`:
-   ```groovy
-   implementation 'com.google.firebase:firebase-database-ktx'
-   ```
-
-2. Skonfiguruj Realtime Database w [konsoli Firebase](https://console.firebase.google.com/) (utwórz bazę, ustaw reguły dostępu).
-
----
-### Struktura bazy danych w Firebase Realtime Database
-
-Firebase Realtime Database przechowuje dane w formie **drzewa JSON**. Cała baza to jeden duży obiekt JSON, w którym możesz tworzyć dowolnie zagnieżdżone gałęzie (klucze i wartości). Nie ma tu tabel ani relacji jak w klasycznych bazach SQL – wszystko opiera się na strukturze klucz-wartość.
-
-**Przykład struktury bazy:**
-```json
-{
-  "produkty": {
-    "id1": {
-      "nazwa": "Kawa",
-      "cena": 12.99
-    },
-    "id2": {
-      "nazwa": "Herbata",
-      "cena": 8.50
-    }
-  },
-  "uzytkownicy": {
-    "uid1": {
-      "email": "jan@wp.pl",
-      "imie": "Jan"
-    }
-  }
 }
 ```
 
-**Najważniejsze cechy struktury:**
-- Każdy węzeł (gałąź) może zawierać kolejne zagnieżdżone dane.
-- Klucze mogą być generowane automatycznie (`push().key`) lub ustalane ręcznie.
-- Możesz odwoływać się do dowolnego miejsca w drzewie za pomocą ścieżki, np. `"produkty/id1/nazwa"`.
-- Dane są pobierane i synchronizowane na poziomie wybranego węzła – możesz pobrać całą gałąź lub tylko jej fragment.
-
-**Wskazówki projektowe:**
-- Unikaj zbyt głębokiego zagnieżdżania danych – lepiej stosować płaską strukturę, aby łatwiej pobierać i aktualizować dane.
-- Jeśli potrzebujesz relacji (np. produkt należy do użytkownika), przechowuj identyfikatory (klucze) zamiast zagnieżdżania całych obiektów.
-
-#### Obiekt FirebaseDatabase
-
-`FirebaseDatabase` to główny obiekt służący do komunikacji z Firebase Realtime Database w aplikacji Android. Dzięki niemu możesz uzyskać dostęp do bazy danych, tworzyć referencje do wybranych gałęzi (węzłów) oraz wykonywać operacje takie jak zapis, odczyt, aktualizacja i usuwanie danych.
-
-Instancję tego obiektu uzyskujesz przez:
-```kotlin
-val database = FirebaseDatabase.getInstance()
-```
-
-Najważniejsze cechy:
-- Pozwala na dostęp do całej bazy lub wybranych fragmentów (poprzez referencje).
-- Obsługuje synchronizację danych w czasie rzeczywistym.
-- Umożliwia pracę offline – dane są buforowane lokalnie i synchronizowane po odzyskaniu połączenia.
-- Pozwala ustawiać reguły bezpieczeństwa i autoryzacji na poziomie bazy.
-
-**Przykład użycia:**
-```kotlin
-val database = FirebaseDatabase.getInstance()
-val ref = database.getReference("produkty") // referencja do gałęzi "produkty"
-```
-
-Dzięki `FirebaseDatabase` możesz łatwo zarządzać danymi w chmurze i synchronizować je pomiędzy wieloma użytkownikami w czasie rzeczywistym.
-
-### Czym jest referencja w strukturze bazy Firebase?
-
-**Referencja** (ang. *reference*) w Firebase Realtime Database to obiekt, który wskazuje na konkretne miejsce (węzeł) w drzewie bazy danych. Za pomocą referencji możesz odczytywać, zapisywać, aktualizować lub usuwać dane w wybranym miejscu bazy.
-
-Referencję tworzysz za pomocą metody `getReference()` na instancji bazy danych, podając ścieżkę do interesującego Cię węzła:
-
-```kotlin
-val database = FirebaseDatabase.getInstance()
-val ref = database.getReference("produkty") // referencja do gałęzi "produkty"
-```
-
-Możesz tworzyć referencje do dowolnego poziomu drzewa, np.:
-
-```kotlin
-val refDoProduktu = database.getReference("produkty/id1") // referencja do konkretnego produktu
-val refDoUzytkownika = database.getReference("uzytkownicy/uid1") // referencja do konkretnego użytkownika
-```
-
-**Do czego służy referencja?**
-- Pozwala na wykonywanie operacji na wybranym fragmencie bazy (np. zapis, odczyt, nasłuchiwanie zmian).
-- Umożliwia łatwe poruszanie się po strukturze drzewa JSON.
-- Dzięki referencjom możesz pracować tylko z danymi, które Cię interesują, bez pobierania całej bazy.
-
-**Przykład użycia referencji:**
-```kotlin
-// Zapis nowego produktu
-val ref = database.getReference("produkty")
-val produktId = ref.push().key
-if (produktId != null) {
-    ref.child(produktId).setValue(produkt)
-}
-
-// Odczyt danych z konkretnego produktu
-val refDoProduktu = database.getReference("produkty/$produktId")
-refDoProduktu.addListenerForSingleValueEvent(object : ValueEventListener {
-    override fun onDataChange(snapshot: DataSnapshot) {
-        val nazwa = snapshot.child("nazwa").getValue(String::class.java)
-        // obsługa danych
-    }
-    override fun onCancelled(error: DatabaseError) {}
-})
-```
-
-**Podsumowanie:**  
-Referencja to "wskaźnik" na wybraną gałąź w bazie Firebase, dzięki któremu możesz wygodnie zarządzać danymi w strukturze drzewa JSON.
-
-**Więcej o strukturze danych:**  
-- [Projektowanie struktury bazy w Realtime Database](https://firebase.google.com/docs/database/web/structure-data)
+**Więcej informacji:**
+- [Cloud Firestore — dokumentacja](https://firebase.google.com/docs/firestore)
 
 ---
-### Przykład: zapis i odczyt danych
 
-Poniżej znajduje się przykładowy kod pokazujący, jak zapisać nowy produkt do bazy oraz jak odczytać dane z Firebase Realtime Database.
+## Firebase Realtime Database — starsze rozwiązanie
 
-**Zapis nowego produktu:**
+> **Uwaga:** Firebase Realtime Database jest starszym rozwiązaniem, poprzedzającym Cloud Firestore. Dla nowych projektów zaleca się Cloud Firestore, które oferuje lepszą skalowalność, bogatszy model zapytań i bardziej elastyczną strukturę danych. Realtime Database można stosować w projektach, które już z niej korzystają, lub gdy wymagana jest wyjątkowo niska latencja synchronizacji.
+
+**Firebase Realtime Database** przechowuje dane w formie jednego drzewa JSON synchronizowanego w czasie rzeczywistym między wszystkimi klientami.
+
+### Porównanie z Firestore: referencje vs kolekcje i dokumenty
+
+Firestore i Realtime Database używają różnych modeli dostępu do danych:
+
+| | Cloud Firestore | Realtime Database |
+|---|---|---|
+| Model danych | Kolekcje → dokumenty | Jedno drzewo JSON |
+| Dostęp do danych | `db.collection("x").document("id")` | `db.getReference("x/id")` |
+| Odpowiednik kolekcji | `db.collection("produkty")` | `db.getReference("produkty")` |
+| Odpowiednik dokumentu | `db.collection("produkty").document("id1")` | `db.getReference("produkty/id1")` |
+| Zapis obiektu | `.set(product).await()` | `.setValue(product).await()` |
+| Nowy klucz | automatyczny przez `.add()` | `ref.push().key` |
+| Odczyt jednorazowy | `.get().await()` → `toObject()` | `.get().await()` → `getValue()` |
+| Nasłuchiwanie zmian | `.snapshots()` / `addSnapshotListener` | `addValueEventListener` |
+
+Referencja w RTDB (`DatabaseReference`) pełni podobną rolę co `DocumentReference` lub `CollectionReference` w Firestore — wskazuje na konkretne miejsce w bazie i pozwala wykonywać na nim operacje.
+
+### Obserwowanie zmian — `callbackFlow`
+
+Nasłuchiwanie zmian można opakować w `callbackFlow`, aby korzystać z nich jako `Flow` w architekturze MVVM:
+
 ```kotlin
 import com.google.firebase.database.FirebaseDatabase
-
-val database = FirebaseDatabase.getInstance()
-val ref = database.getReference("produkty")
-
-// Tworzymy mapę z danymi produktu
-val produkt = mapOf(
-    "nazwa" to "Kawa",
-    "cena" to 12.99
-)
-
-// Generujemy unikalny klucz dla nowego produktu
-val produktId = ref.push().key
-if (produktId != null) {
-    ref.child(produktId).setValue(produkt)
-}
-```
-#### Wymagania względem zapisywanego obiektu
-
-Aby zapisać obiekt do bazy za pomocą `setValue()`, obiekt powinien:
-- być typu prostego (np. String, Int, Double, Boolean, Map, List) **lub**
-- być klasą danych z publicznymi właściwościami i domyślnym (bezparametrowym) konstruktorem.
-
-Przykład klasy danych:
-```kotlin
-data class Produkt(
-    val nazwa: String? = null,
-    val cena: Double? = null
-)
-```
-**Ważne:**  
-Jeśli zapisujesz własny obiekt (np. `Produkt`), wszystkie jego właściwości muszą być publiczne i mieć wartości domyślne (np. `= null`), aby Firebase mógł poprawnie zdeserializować dane podczas odczytu.
-
-**Odczyt danych (nasłuchiwanie zmian w gałęzi "produkty"):**
-```kotlin
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 
-ref.addValueEventListener(object : ValueEventListener {
-    override fun onDataChange(snapshot: DataSnapshot) {
-        for (child in snapshot.children) {
-            val nazwa = child.child("nazwa").getValue(String::class.java)
-            val cena = child.child("cena").getValue(Double::class.java)
-            // obsługa danych, np. dodanie do listy produktów
+fun observeProducts(): Flow<List<Product>> = callbackFlow {
+    val ref = FirebaseDatabase.getInstance().getReference("produkty")
+
+    val listener = object : ValueEventListener {
+        override fun onDataChange(snapshot: DataSnapshot) {
+            val products = snapshot.children.mapNotNull {
+                it.getValue(Product::class.java)
+            }
+            trySend(products)
+        }
+        override fun onCancelled(error: DatabaseError) {
+            close(error.toException())
         }
     }
-    override fun onCancelled(error: DatabaseError) {
-        // obsługa błędu
-    }
-})
-```
 
-**Wyjaśnienie:**
-- Do zapisu danych używamy metody `setValue()` na referencji do wybranego miejsca w bazie.
-- Do odczytu danych używamy nasłuchiwania zmian (`addValueEventListener`), dzięki czemu aplikacja automatycznie otrzymuje aktualizacje w czasie rzeczywistym.
-- Możesz odczytywać całą gałąź (np. wszystkie produkty) lub pojedynczy element (np. jeden produkt po jego ID).
-
-**Pojedyncze pobranie danych z bazy**
-
-Jeśli chcesz pobrać dane tylko raz (bez nasłuchiwania zmian), użyj metody `addListenerForSingleValueEvent`:
-
-```kotlin
-val refDoProduktu = database.getReference("produkty/$produktId")
-refDoProduktu.addListenerForSingleValueEvent(object : ValueEventListener {
-    override fun onDataChange(snapshot: DataSnapshot) {
-        val nazwa = snapshot.child("nazwa").getValue(String::class.java)
-        val cena = snapshot.child("cena").getValue(Double::class.java)
-        // obsługa pojedynczego produktu
-    }
-    override fun onCancelled(error: DatabaseError) {
-        // obsługa błędu
-    }
-})
-```
-**Pobieranie danych jednorazowo za pomocą metody get()**
-
-Firebase Realtime Database umożliwia pobranie danych jednorazowo bez nasłuchiwania zmian, korzystając z metody `get()`. Jest to wygodna alternatywa dla `addListenerForSingleValueEvent`.
-
-**Przykład użycia:**
-```kotlin
-val ref = FirebaseDatabase.getInstance().getReference("produkty/$produktId")
-ref.get().addOnSuccessListener { snapshot ->
-    val produkt = snapshot.getValue(Produkt::class.java)
-    // obsługa pobranego produktu
-}.addOnFailureListener {
-    // obsługa błędu
+    ref.addValueEventListener(listener)
+    awaitClose { ref.removeEventListener(listener) }
 }
 ```
 
-#### Czym jest DataSnapshot?
+### Jednorazowy odczyt z `await`
 
-`DataSnapshot` to obiekt reprezentujący dane pobrane z wybranego miejsca w bazie (referencji). Pozwala na:
-- odczyt wartości konkretnego pola (`snapshot.child("nazwa").getValue(String::class.java)`),
-- iterowanie po dzieciach (np. po wszystkich produktach w gałęzi),
-- sprawdzenie, czy dane istnieją (`snapshot.exists()`).
-
-#### Jak działa metoda getValue?
-
-Metoda `getValue()` konwertuje dane z bazy na wskazany typ w Kotlinie/Java.  
-Przykład:
 ```kotlin
-val nazwa = snapshot.child("nazwa").getValue(String::class.java)
-val cena = snapshot.child("cena").getValue(Double::class.java)
+import kotlinx.coroutines.tasks.await
+
+suspend fun getProduct(id: String): Product? {
+    val snapshot = FirebaseDatabase.getInstance()
+        .getReference("produkty/$id").get().await()
+    return snapshot.getValue(Product::class.java)
+}
 ```
-Możesz też pobrać cały obiekt, jeśli masz odpowiednią klasę danych:
+
+### Zapis danych
+
 ```kotlin
-data class Produkt(val nazwa: String? = null, val cena: Double? = null)
-val produkt = snapshot.getValue(Produkt::class.java)
+suspend fun addProduct(product: Product) {
+    val ref = FirebaseDatabase.getInstance().getReference("produkty")
+    val id = ref.push().key ?: return
+    ref.child(id).setValue(product).await()
+}
 ```
----
 
-### Najważniejsze cechy Realtime Database
-
-- Synchronizacja danych w czasie rzeczywistym między wszystkimi klientami.
-- Struktura danych oparta na drzewie JSON (NoSQL).
-- Obsługa offline – dane są buforowane lokalnie i synchronizowane po odzyskaniu połączenia.
-- Możliwość ustawiania reguł bezpieczeństwa i autoryzacji.
-
-**Więcej informacji:**  
-- [Firebase Realtime Database – dokumentacja](https://firebase.google.com/docs/database)
+**Więcej informacji:**
+- [Firebase Realtime Database — dokumentacja](https://firebase.google.com/docs/database)
 
 ---
 
-## Zalety korzystania z Firebase
+## Zalecenia i dobre praktyki
 
-- Szybka integracja i gotowe rozwiązania backendowe.
-- Bezpieczne uwierzytelnianie użytkowników.
-- Skalowalność i niezawodność usług Google.
+- **Do nowych projektów zaleca się Cloud Firestore** — oferuje bogatszy model zapytań, lepszą skalowalność i bardziej elastyczną strukturę danych niż Realtime Database.
+
+- **Operacje Firebase należy wywoływać przez `.await()`** — pozwala pisać sekwencyjny, czytelny kod w korutynach zamiast zagnieżdżonych listenerów. Wymaga zależności `kotlinx-coroutines-play-services`.
+
+- **Nasłuchiwanie zmian w czasie rzeczywistym należy opakowywać w `callbackFlow`** — zapewnia prawidłowe wyrejestrowanie listenera w `awaitClose { }` i integrację z architekturą MVVM przez `Flow`.
+
+- **Dostęp do Firebase należy izolować w warstwie repozytorium** — ViewModel nie powinien korzystać bezpośrednio z `FirebaseFirestore` ani `FirebaseAuth`. Ułatwia to testowanie i wymianę źródła danych.
+
+- **Operacje zapisu i odczytu należy opakowywać w `try/catch`** — Firebase rzuca wyjątki przy braku połączenia, błędach uprawnień lub nieistniejących dokumentach.
+
+- **Reguły bezpieczeństwa Firestore należy konfigurować w konsoli Firebase** — domyślnie baza może być otwarta lub całkowicie zablokowana; odpowiednie reguły chronią dane użytkowników.
+
+- **BOM (`firebase-bom`) upraszcza zarządzanie wersjami** — przy aktualizacji Firebase wystarczy zmienić numer BOM w jednym miejscu.
 
 ---
 
-**Więcej informacji:**  
+## Więcej informacji
+
 - [Oficjalna dokumentacja Firebase](https://firebase.google.com/docs/android/setup)
-- [Przykłady i przewodniki](https://firebase.google.com/docs)
-
----
-
-### 🧭 **Powrót do głównej strony:** [Start](https://github.com/MarcinRod/AndroidLecture2025/tree/main)
+- [Cloud Firestore — dokumentacja](https://firebase.google.com/docs/firestore)
+- [Firebase Authentication — dokumentacja](https://firebase.google.com/docs/auth)
+- [Firebase Realtime Database — dokumentacja](https://firebase.google.com/docs/database)

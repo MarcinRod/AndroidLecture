@@ -1115,10 +1115,10 @@ Funkcje i właściwości rozszerzające (extension functions, extension properti
 ## 📱Aplikacja pokazowa:
 - [KotlinShowcase](https://github.com/MarcinRod/KotlinShowcase)
 
-## 📚 Dokumentacja i materiały
+## Dokumentacja i materiały
 
 - [Oficjalna dokumentacja Kotlin](https://kotlinlang.org/docs/home.html)
 - [Kotlin for Android Developers](https://developer.android.com/kotlin)
 - [Podstawy Kotlin na Android Developers](https://developer.android.com/kotlin/learn)
 ---
-### 🧭 **Następny temat:** [Android Studio](https://github.com/MarcinRod/AndroidLecture2025/blob/main/02%20Android%20Studio.md)
+###  **Następny temat:** [Android Studio](https://github.com/MarcinRod/AndroidLecture2025/blob/main/02%20Android%20Studio.md)

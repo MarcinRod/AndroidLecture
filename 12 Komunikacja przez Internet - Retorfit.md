@@ -79,11 +79,11 @@ import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
-data class Produkt(
+data class Product(
     val id: Int,
-    @Json(name = "product_name") val nazwa: String,
-    val cena: Double,
-    val opis: String? = null
+    @Json(name = "product_name") val name: String,
+    val price: Double,
+    val description: String? = null
 )
 ```
 
@@ -101,11 +101,11 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class Produkt(
+data class Product(
     val id: Int,
-    @SerialName("product_name") val nazwa: String,
-    val cena: Double,
-    val opis: String? = null
+    @SerialName("product_name") val name: String,
+    val price: Double,
+    val description: String? = null
 )
 ```
 
@@ -136,19 +136,19 @@ import retrofit2.http.*
 
 interface ApiService {
     @GET("produkty")
-    suspend fun getProdukty(): Response<List<Produkt>>
+    suspend fun getProducts(): Response<List<Product>>
 
     @GET("produkty/{id}")
-    suspend fun getProduktById(@Path("id") id: Int): Response<Produkt>
+    suspend fun getProduktById(@Path("id") id: Int): Response<Product>
 
     @POST("produkty")
-    suspend fun dodajProdukt(@Body produkt: Produkt): Response<Produkt>
+    suspend fun addProduct(@Body product: Product): Response<Product>
 
     @PUT("produkty/{id}")
-    suspend fun aktualizujProdukt(@Path("id") id: Int, @Body produkt: Produkt): Response<Produkt>
+    suspend fun updateProduct(@Path("id") id: Int, @Body product: Product): Response<Product>
 
     @DELETE("produkty/{id}")
-    suspend fun usunProdukt(@Path("id") id: Int): Response<Unit>
+    suspend fun deleteProduct(@Path("id") id: Int): Response<Unit>
 }
 ```
 
@@ -244,10 +244,10 @@ ViewModel → Repository → ApiService (Retrofit)
 Repository odpowiada za pobieranie danych i udostępnianie ich modelowi widoku. Obsługę kodów błędów HTTP należy zamknąć wewnątrz Repository — ViewModel powinien otrzymywać gotowe dane lub wyjątek:
 
 ```kotlin
-class ProduktyRepository(private val api: ApiService) {
+class ProductsRepository(private val api: ApiService) {
 
-    suspend fun getProdukty(): List<Produkt> {
-        val response = api.getProdukty()
+    suspend fun getProducts(): List<Product> {
+        val response = api.getProducts()
         if (response.isSuccessful) {
             return response.body() ?: emptyList()
         } else {
@@ -255,8 +255,8 @@ class ProduktyRepository(private val api: ApiService) {
         }
     }
 
-    suspend fun dodajProdukt(produkt: Produkt): Produkt {
-        val response = api.dodajProdukt(produkt)
+    suspend fun addProduct(product: Product): Product {
+        val response = api.addProduct(product)
         if (response.isSuccessful) {
             return response.body() ?: throw Exception("Pusta odpowiedź serwera")
         } else {
@@ -277,21 +277,21 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
-class ProduktyViewModel(private val repository: ProduktyRepository) : ViewModel() {
+class ProductsViewModel(private val repository: ProductsRepository) : ViewModel() {
 
-    private val _produkty = MutableStateFlow<List<Produkt>>(emptyList())
-    val produkty: StateFlow<List<Produkt>> = _produkty
+    private val _products = MutableStateFlow<List<Product>>(emptyList())
+    val products: StateFlow<List<Product>> = _products
 
-    private val _blad = MutableStateFlow<String?>(null)
-    val blad: StateFlow<String?> = _blad
+    private val _error = MutableStateFlow<String?>(null)
+    val error: StateFlow<String?> = _error
 
-    fun pobierzProdukty() {
+    fun getProducts() {
         viewModelScope.launch {
             try {
-                _produkty.value = repository.getProdukty()
-                _blad.value = null
+                _products.value = repository.getProducts()
+                _error.value = null
             } catch (e: Exception) {
-                _blad.value = e.message
+                _error.value = e.message
             }
         }
     }
@@ -301,15 +301,15 @@ class ProduktyViewModel(private val repository: ProduktyRepository) : ViewModel(
 Stan jest obserwowany w funkcji kompozycyjnej przez `collectAsStateWithLifecycle()`:
 
 ```kotlin
-val produkty by viewModel.produkty.collectAsStateWithLifecycle()
-val blad by viewModel.blad.collectAsStateWithLifecycle()
+val products by viewModel.products.collectAsStateWithLifecycle()
+val error by viewModel.error.collectAsStateWithLifecycle()
 
-if (blad != null) {
-    Text("Błąd: $blad")
+if (error != null) {
+    Text("Błąd: $error")
 } else {
     LazyColumn {
-        items(produkty) { produkt ->
-            Text(produkt.nazwa)
+        items(products) { product ->
+            Text(product.name)
         }
     }
 }

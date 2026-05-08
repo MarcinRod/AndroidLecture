@@ -213,46 +213,7 @@ Surface(
 
 
 
----
 
-## Jednostki wymiarów: dp i sp
-
-Android obsługuje kilka jednostek długości, ale w praktyce używa się dwóch:
-
-| Jednostka | Nazwa | Zastosowanie |
-|-----------|-------|--------------|
-| `px` | Piksele fizyczne | Nie należy używać — wygląd zależy od gęstości ekranu |
-| `dp` | Density-independent pixels | Wymiary elementów UI (marginesy, rozmiary, paddingi) |
-| `sp` | Scale-independent pixels | Rozmiar tekstu — uwzględnia dodatkowo preferencje czcionki użytkownika |
-
-**Praktyczna zasada:** do wszystkich wymiarów używać `dp`, do rozmiaru tekstu `sp`.
-
-### Na czym polega niezależność od gęstości?
-
-Różne urządzenia mają różną gęstość ekranu (DPI — dots per inch). Element o rozmiarze `100px` będzie wyglądał inaczej na ekranie 160 dpi (duży) i 480 dpi (mały — ok. 3× mniejszy fizycznie).
-
-`1 dp` jest zdefiniowany jako jeden piksel na ekranie referencyjnym o gęstości **160 dpi** (mdpi). Na ekranach o wyższej gęstości Android automatycznie przelicza:
-
-$$\text{piksele} = dp \times \frac{DPI}{160}$$
-
-| Gęstość | Nazwa | Mnożnik | `16 dp` w pikselach |
-|---------|-------|---------|---------------------|
-| 160 dpi | mdpi | ×1 | 16 px |
-| 240 dpi | hdpi | ×1,5 | 24 px |
-| 320 dpi | xhdpi | ×2 | 32 px |
-| 480 dpi | xxhdpi | ×3 | 48 px |
-| 640 dpi | xxxhdpi | ×4 | 64 px |
-
-Dzięki temu element o szerokości `48 dp` zajmuje zbliżony **rozmiar fizyczny** (ok. 7,6 mm) niezależnie od urządzenia. Przeliczenie odbywa się automatycznie — w kodzie zawsze podaje się wartość w `dp`.
-
-W Compose wartości podaje się bezpośrednio w kodzie z rozszerzeniem:
-
-```kotlin
-Modifier.padding(16.dp)
-Text(text = "Witaj", fontSize = 18.sp)
-```
-
----
 
 ## Kształty w Material 3
 
@@ -286,7 +247,7 @@ Kształty można dostosować globalnie w konfiguracji motywu — zmiana w jednym
 - **Nie należy przechowywać referencji do `Context`** poza funkcjami kompozycyjnymi – więcej w rozdziale o Aktywności.
 - **Wszystkie teksty należy przechowywać w `strings.xml`** – ułatwia tłumaczenie i zarządzanie treścią. Do tekstu z parametrami używać `%1$s` / `%1$d`, do liczebników — `<plurals>`.
 - **Warto tworzyć alternatywne zasoby** dla różnych języków i rozdzielczości, aby aplikacja była uniwersalna.
-- **Do wymiarów używać `dp`, do rozmiaru tekstu `sp`** – Android automatycznie przelicza wartości dla ekranów o różnej gęstości. Wartości `px` są zależne od sprzętu i nie należy ich stosować.
+
 - **Kolory i kształty najlepiej pobierać z `MaterialTheme`** (`colorScheme`, `shapes`) – zapewnia spójność z motywem aplikacji i ułatwia jego personalizację.
 - **`colors.xml` stosować do przechowywania kolorów markowych (hex)**, które następnie przekazuje się do konfiguracji motywu – nie odwoływać się do nich bezpośrednio w funkcjach kompzycyjnych.
 

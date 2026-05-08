@@ -543,7 +543,7 @@ dependencies {
 
 ---
 
-**Dokumentacja:** [Android Studio](https://developer.android.com/studio) i [Gradle](https://docs.gradle.org/current/userguide/userguide.html).
+### **Dokumentacja:** [Android Studio](https://developer.android.com/studio) i [Gradle](https://docs.gradle.org/current/userguide/userguide.html).
 
 
-**Następny temat:** [Funkcje kompozycyjne](https://github.com/MarcinRod/AndroidLecture2025/blob/main/03%20Funkcje%20kompozycyjne.md)
+### **Następny temat:** [Funkcje kompozycyjne](https://github.com/MarcinRod/AndroidLecture2025/blob/main/03%20Funkcje%20kompozycyjne.md)
