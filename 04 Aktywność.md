@@ -27,7 +27,7 @@ class MainActivity : ComponentActivity() {
 
 ## Architektura Single Activity
 
-Nowoczesne aplikacje Android (szczególnie oparte na Jetpack Compose) opierają się na wzorcu **Single Activity** – cała aplikacja działa w ramach jednej Activity, a poszczególne ekrany to osobne funkcje composable, między którymi nawiguje się za pomocą **Jetpack Navigation** .
+Nowoczesne aplikacje Android (szczególnie oparte na Jetpack Compose) opierają się na wzorcu **Single Activity** – cała aplikacja działa w ramach jednej Activity, a poszczególne ekrany to osobne funkcje kompozycyjne, między którymi nawiguje się za pomocą **Jetpack Navigation** .
 
 ```
 MainActivity
@@ -132,11 +132,11 @@ Każde pole klasy Activity jest resetowane do wartości domyślnych. Dane niechr
 
 ### Rozwiązania
 
-- **`ViewModel`** – zalecane podejście. Dane przechowywane w ViewModelu przeżyją zmianę konfiguracji, ponieważ ViewModel nie jest niszczony razem z Activity.
-- **`rememberSaveable`** (Compose) – przechowuje stan composable w `Bundle`, który jest odtwarzany po zmianie konfiguracji. Odpowiednik `onSaveInstanceState` po stronie Compose (omówiony w poprzednim rozdziale).
+- **`ViewModel`** – zalecane podejście. Dane przechowywane w ViewModelu przeżyją zmianę konfiguracji, ponieważ ViewModel nie jest niszczony razem z Activity. 
+- **`rememberSaveable`** (Compose) – przechowuje stan funkcji kompozycyjnej w `Bundle`, który jest odtwarzany po zmianie konfiguracji. Odpowiednik `onSaveInstanceState` po stronie Compose.
 - **`onSaveInstanceState`** – tradycyjny mechanizm zapisywania prostych danych (stringów, liczb) do `Bundle` przed zniszczeniem Activity.
 
-> W tym kursie głównym narzędziem do obsługi zmian konfiguracji będzie **ViewModel**, omówiony w rozdziale poświęconym architekturze aplikacji ([Architetura aplikacji](https://github.com/MarcinRod/AndroidLecture2025/blob/main/09%20Architektura%20aplikacji.md)).
+> W tym kursie głównym narzędziem do obsługi zmian konfiguracji będzie **ViewModel**, omówiony w rozdziale poświęconym architekturze aplikacji ([Architetura aplikacji](https://github.com/MarcinRod/AndroidLecture2025/blob/main/010%20Architektura%20aplikacji.md)).
 
 ### Co to jest `Context`?
 
@@ -163,7 +163,7 @@ Każde pole klasy Activity jest resetowane do wartości domyślnych. Dane niechr
 W Compose nie ma bezpośredniego dostępu do kontekstu (jak w Activity przez `this`), dlatego korzysta się z funkcji pomocniczych.
 
 
-W funkcjach composable używamy:
+W funkcjach kompozycyjnych używamy:
 
 ```kotlin
 val context = LocalContext.current
@@ -200,8 +200,8 @@ val context = LocalContext.current
 
 ### Ważne wskazówki
 
-- **Nie należy przechowywać referencji do `Context` poza composable.**  
-  Aktualny kontekst należy pobierać przez `LocalContext.current` w ciele composable lub lambdzie onClick.
+- **Nie należy przechowywać referencji do `Context` poza funkcją kompozycyjną.**  
+  Aktualny kontekst należy pobierać przez `LocalContext.current` w ciele funkcji kompozycyjnej lub lambdzie onClick.
 - **Do operacji globalnych (np. repozytoria, ViewModel)** należy używać `context.applicationContext`.
 - **Do operacji związanych z UI** (np. Toast, startActivity) należy używać bieżącego kontekstu z `LocalContext`.
 
@@ -216,4 +216,4 @@ val context = LocalContext.current
 
 ---
 
-**Następny temat:** [Zasoby aplikacji](https://github.com/MarcinRod/AndroidLecture2025/blob/main/05%20Zasoby.md)
+### **Następny temat:** [Zasoby aplikacji](https://github.com/MarcinRod/AndroidLecture2025/blob/main/05%20Zasoby.md)
