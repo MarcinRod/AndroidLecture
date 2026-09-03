@@ -1,5 +1,5 @@
 # 📚 Spis tematów 
-### [1. Kotlin dla Android](https://github.com/MarcinRod/AndroidLecture2025/blob/main/01%20Kotlin%20for%20Android.md)  
+### [1. Kotlin dla Android](https://github.com/MarcinRod/AndroidLecture/blob/main/01%20Kotlin%20dla%20Android.md)  
    Podstawy języka Kotlin, składnia, typy danych, funkcje, klasy, kolekcje, null safety, funkcje rozszerzające.
 
 ### [2. Android Studio](https://github.com/MarcinRod/AndroidLecture2025/blob/main/https://github.com/MarcinRod/AndroidLecture2025/blob/main/02%20Android%20Studio.md)  
