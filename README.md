@@ -1,3 +1,8 @@
+🇬🇧 **English Version / Wersja Angielska** 🇬🇧  
+👉 [ENt/ folder with all lectures in English](https://github.com/MarcinRod/AndroidLecture/tree/main/ENt)
+
+---
+
 # 📚 Spis tematów 
 ### [1. Kotlin dla Android](https://github.com/MarcinRod/AndroidLecture/blob/main/01%20Kotlin%20dla%20Android.md)  
    Podstawy języka Kotlin, składnia, typy danych, funkcje, klasy, kolekcje, null safety, funkcje rozszerzające.
