@@ -1,5 +1,5 @@
-🇬🇧 **English Version / Wersja Angielska** 🇬🇧  
-👉 [En/ folder with all lectures in English](https://github.com/MarcinRod/AndroidLecture/tree/main/En)
+**English Version**   
+[En/ folder with all lectures in English](https://github.com/MarcinRod/AndroidLecture/tree/main/En)
 
 ---
 
