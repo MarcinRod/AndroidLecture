@@ -333,7 +333,7 @@ val productsFlow: Flow<List<Product>> = productDao.observeAll()
 
 ## Repository – Integration with MVVM Architecture
 
-Following good architecture practices (described in detail in [Application Architecture](En/10%20Application%20Architecture.md) chapter), ViewModel shouldn't access DAO directly. Introduce **repository** – intermediary layer hiding database access details.
+Following good architecture practices (described in detail in [Application Architecture](/En/10%20Application%20Architecture.md) chapter), ViewModel shouldn't access DAO directly. Introduce **repository** – intermediary layer hiding database access details.
 
 Repository often defined through **interface and separate implementing class**. Such division has two key advantages:
 
@@ -559,4 +559,4 @@ Composable function
 
 ---
 
-### **Next topic:** [Internet Communication - Retrofit](En/12%20Internet%20Communication%20-%20Retrofit.md)
+### **Next topic:** [Internet Communication - Retrofit](/En/12%20Internet%20Communication%20-%20Retrofit.md)

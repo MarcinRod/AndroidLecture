@@ -45,7 +45,7 @@ suspend fun fetchDataFromNetwork(): String {
 
 - **Scope** manages coroutines – determines which part of application they're assigned to and when they should be cancelled.
 - Most commonly used scopes in Compose:
-  - **viewModelScope** – coroutines are tied to ViewModel and cancelled when `ViewModel` is destroyed (more on `ViewModel` in [Application Architecture](En/10%20Application%20Architecture.md) chapter).
+  - **viewModelScope** – coroutines are tied to ViewModel and cancelled when `ViewModel` is destroyed (more on `ViewModel` in [Application Architecture](/En/10%20Application%20Architecture.md) chapter).
   - **lifecycleScope** – coroutines are tied to component lifecycle (e.g., activity).
   - **rememberCoroutineScope** – scope tied to composable function, manages coroutines in its context.
 
@@ -336,4 +336,4 @@ coroutineScope.launch {
 
 ---
 
-### **Next topic:** [Application Architecture](En/10%20Application%20Architecture.md)
+### **Next topic:** [Application Architecture](/En/10%20Application%20Architecture.md)

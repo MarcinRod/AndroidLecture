@@ -421,7 +421,7 @@ val destination = savedStateHandle.toRoute<Destinations.Detail>()
 val itemId = destination.itemId
 ```
 
-In more elaborate screens recommend storing screen state as sealed class object. Allows clearly describing different possible UI states (e.g., loading, success, error) and eases management. Example below uses `viewModelScope` – coroutine scope tied to ViewModel lifecycle, automatically cancelled on its destruction (more in [Background Tasks - Coroutines](En/09%20Background%20Tasks%20-%20Coroutines.md) chapter).
+In more elaborate screens recommend storing screen state as sealed class object. Allows clearly describing different possible UI states (e.g., loading, success, error) and eases management. Example below uses `viewModelScope` – coroutine scope tied to ViewModel lifecycle, automatically cancelled on its destruction (more in [Background Tasks - Coroutines](/En/09%20Background%20Tasks%20-%20Coroutines.md) chapter).
 
 **Example:**
 
@@ -594,4 +594,4 @@ fun observeNetworkStatus(context: Context): Flow<Boolean> = callbackFlow {
 
 ---
 
-### **Next topic:** [Databases - Room](En/11%20Databases%20-%20Room.md)
+### **Next topic:** [Databases - Room](/En/11%20Databases%20-%20Room.md)

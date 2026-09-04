@@ -327,4 +327,4 @@ val pendingIntent = PendingIntent.getActivity(
 
 ---
 
-### **Next topic:** [Manifest and Permissions](En/08%20Manifest%20and%20Permissions.md)
+### **Next topic:** [Manifest and Permissions](/En/08%20Manifest%20and%20Permissions.md)
