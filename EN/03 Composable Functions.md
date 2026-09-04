@@ -169,7 +169,7 @@ Key recomposition properties:
 
 When operations outside composition are necessary (e.g., API calls) dedicated effect functions like `LaunchedEffect` or `DisposableEffect` should be used. They guarantee safe operation execution at appropriate composition lifecycle moment.
 
-> Side effects are discussed in detail in coroutines chapter: [Background Tasks – Coroutines](ENt/09%20Background%20Tasks%20-%20Coroutines.md).
+> Side effects are discussed in detail in coroutines chapter: [Background Tasks – Coroutines](En/09%20Background%20Tasks%20-%20Coroutines.md).
 
 ### Data Flow — State Down, Events Up
 
@@ -480,4 +480,4 @@ Containers serve to organize and position UI elements relative to each other.
 
 ---
 
-### **Next topic:** [Activity](ENt/04%20Activity.md)
+### **Next topic:** [Activity](En/04%20Activity.md)

@@ -46,7 +46,7 @@ This approach has several advantages compared to classic multiple-Activity model
 | Transition Animations  | Harder to customize              | Built-in Navigation Compose        |
 | State Sharing          | Complicated (Intent or Bus)      | Easy through shared ViewModel       |
 
-> Navigation in Compose is discussed in separate chapter (Chapter 6: [Navigation Component](ENt/06%20Navigation%20Component.md)). This course creates applications based on Single Activity.
+> Navigation in Compose is discussed in separate chapter (Chapter 6: [Navigation Component](En/06%20Navigation%20Component.md)). This course creates applications based on Single Activity.
 
 ---
 
@@ -143,7 +143,7 @@ Every Activity class field is reset to default values. Unprotected data (e.g., f
 - **`rememberSaveable`** (Compose) – stores composable function state in `Bundle` which is restored after configuration change. Equivalent of `onSaveInstanceState` for Compose.
 - **`onSaveInstanceState`** – traditional mechanism saving simple data (strings, numbers) to `Bundle` before Activity destruction.
 
-> In this course main tool for handling configuration changes will be **ViewModel**, discussed in application architecture chapter ([Application Architecture](ENt/10%20Application%20Architecture.md)).
+> In this course main tool for handling configuration changes will be **ViewModel**, discussed in application architecture chapter ([Application Architecture](En/10%20Application%20Architecture.md)).
 
 ---
 
@@ -223,4 +223,4 @@ val context = LocalContext.current
 
 ---
 
-### **Next topic:** [Resources](ENt/05%20Resources.md)
+### **Next topic:** [Resources](En/05%20Resources.md)

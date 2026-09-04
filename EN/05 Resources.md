@@ -257,4 +257,4 @@ Shapes can be customized globally in theme configuration – change in one place
 
 ---
 
-### **Next topic:** [Navigation Component](ENt/06%20Navigation%20Component.md)
+### **Next topic:** [Navigation Component](En/06%20Navigation%20Component.md)

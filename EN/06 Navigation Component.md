@@ -482,4 +482,4 @@ Navigation Compose is modern and recommended way to handle navigation in Jetpack
 
 ---
 
-### **Next topic:** [Intents](ENt/07%20Intents.md)
+### **Next topic:** [Intents](En/07%20Intents.md)
