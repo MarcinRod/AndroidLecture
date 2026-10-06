@@ -500,7 +500,609 @@ Null safety is one of Kotlin's most important features, helping avoid `null`-rel
   val length = text!!.length // throws exception if text == null
   ```
 
+ - **Safe cast (`as?`):**
+    Returns `null` if the cast fails.
+    ```kotlin
+    val obj: Any = "text"
+    val text: String? = obj as? String  // "text"
+    val number: Int? = obj as? Int       // null (the cast failed)
+    ```
+
+ - **Practical example:**
+    ```kotlin
+    fun showLength(text: String?) {
+      println("Length: ${text?.length ?: "no text"}")
+    }
+    showLength("Kotlin") // Length: 6
+    showLength(null)     // Length: no text
+    ```
+
+**Tips:**
+  - Avoid nullable variables when they are not necessary.
+  - Null safety makes code safer and easier to maintain, which is especially important in Android applications.
+
 ---
+
+## Classes
+
+  In Kotlin, classes are the basic way to define your own data types.
+
+### Class Naming
+
+  - Kotlin class names should use **PascalCase** — each word starts with a capital letter, with no underscores, e.g., `User`, `MainActivity`, `ProductItem`.
+  - A class name should clearly describe what the class represents (e.g., `User`, `Order`, `LoginViewModel`).
+  - The same rules apply to data classes (`data class`); the name should be a noun.
+  - Avoid abbreviations and unclear names — code should be self-explanatory.
+  - Singleton objects (`object`) and companion objects should also use PascalCase, e.g., `Logger`, `DatabaseHelper`.
+
+  **Examples of good names:**
+  ```kotlin
+  class UserProfile
+  data class ProductItem(val name: String, val price: Double)
+  object NetworkManager
+  ```
+  **Examples of poor names:**
+  ```kotlin
+  class userprofile
+  class product_item
+  object networkmanager
+  ```
+  Good class naming makes code easier to read, test, and maintain in larger Android projects.
+
+  - **Regular class:**
+    ```kotlin
+    class Person(val name: String, var age: Int)
+    val jan = Person("Jan", 30)
+    println(jan.name) // Jan
+    jan.age = 31
+    ```
+
+  - **Class with methods:**
+    ```kotlin
+    class Calculator {
+      fun add(a: Int, b: Int): Int = a + b
+    }
+    val calc = Calculator()
+    println(calc.add(2, 3)) // 5
+    ```
+
+### Class Constructor
+
+  In Kotlin, a constructor is a special function used to create objects of a class. The **primary constructor** is used most often and is defined directly in the class header:
+
+  ```kotlin
+  class Person(val name: String, var age: Int)
+  ```
+  - Constructor parameters can immediately become class properties by using `val` or `var`, as in the example above.
+  - Creating an object:
+    ```kotlin
+    val jan = Person("Jan", 30)
+    ```
+
+  You can also define a **secondary constructor** when you need another way to create an object:
+
+  ```kotlin
+  class Person(val name: String) {
+    var age: Int = 0
+
+    constructor(name: String, age: Int) : this(name) {
+      this.age = age
+    }
+  }
+  ```
+
+  - A secondary constructor uses the `constructor` keyword and must always call the primary constructor (`: this(...)`).
+
+  **Important:**
+  - If a class has no properties or methods, you can omit the parentheses:
+    ```kotlin
+    class Empty
+    ```
+  - If additional logic is needed when an object is created, you can use an `init` block:
+    ```kotlin
+    class Person(val name: String) {
+      init {
+        println("Creating a person named $name")
+      }
+    }
+    ```
+
+## Inheritance
+
+  In Kotlin, you can create class hierarchies and use inheritance to reuse and extend functionality.
+
+  - By default, every Kotlin class is **final** (it cannot be inherited from). To allow inheritance, use the `open` keyword on the class and its methods.
+
+  **Inheritance example:**
+  ```kotlin
+  open class Animal(val name: String) {
+    open fun makeSound() {
+      println("The animal makes a sound")
+    }
+  }
+
+  class Dog(name: String) : Animal(name) {
+    override fun makeSound() {
+      println("Woof woof!")
+    }
+  }
+
+  val dog = Dog("Reksio")
+  dog.makeSound() // Woof woof!
+  ```
+
+  - **open** — allows a class to be inherited from or a method to be overridden.
+  - **override** — overrides a method from the base class.
+  - A subclass calls the base class constructor using `: Base(...)`.
+
+### The `this` and `super` Keywords
+
+  - **`this`** — refers to the current object (class instance). It is used inside a class to refer to its own properties and methods. It is also used in scope functions (`apply`, `run`, `with`), where it refers to the object on which the block runs:
+    ```kotlin
+    class Person(val name: String) {
+      fun greet() = "Hello, I am ${this.name}" // this can be omitted here
+    }
+    ```
+
+  - **`super`** — refers to the base class (parent class). It lets you call a parent method or constructor when a subclass overrides it:
+    ```kotlin
+    class Dog(name: String) : Animal(name) {
+      override fun makeSound() {
+        super.makeSound()   // call the implementation from Animal
+        println("Woof woof!")
+      }
+    }
+    ```
+
+### Interfaces
+
+  Interfaces in Kotlin are defined using the `interface` keyword. An interface can contain method declarations (without implementations) as well as default method implementations.
+
+  - A class can implement any number of interfaces (unlike class inheritance, which is limited to one base class).
+  - Interfaces are often used to define contracts that classes must fulfill (e.g., handling clicks or communication between components).
+
+  **Simple interface example:**
+  ```kotlin
+  interface Clickable {
+    fun click()
+  }
+
+  class Button : Clickable {
+    override fun click() {
+      println("Button clicked")
+    }
+  }
+
+  val button = Button()
+  button.click() // Button clicked
+  ```
+
+  **Interface with a default implementation:**
+  ```kotlin
+  interface Greetable {
+    fun greet(name: String) {
+      println("Hello, $name!")
+    }
+  }
+
+  class User : Greetable
+
+  val user = User()
+  user.greet("Anna") // Hello, Anna!
+  ```
+
+  **Implementing multiple interfaces:**
+  ```kotlin
+  interface Clickable { fun click() }
+  interface Flyable { fun fly() }
+
+  class SuperBird : Clickable, Flyable {
+    override fun click() { println("Bird clicked") }
+    override fun fly() { println("Bird is flying") }
+  }
+  ```
+
+  **Important features of Kotlin interfaces:**
+  - An interface can have properties without state, e.g., `val name: String`.
+  - An interface cannot store state (it cannot have fields with values).
+  - A class can implement multiple interfaces.
+
+  Interfaces are widely used in Android, e.g., for handling events (clicks, callbacks), communication between fragments, adapters, and more.
+
+### Abstract Classes
+
+  An abstract class (`abstract class`) cannot be instantiated directly — it serves as a template for subclasses. It can contain both abstract methods (without implementations) and implemented methods, as well as fields that store state.
+
+  ```kotlin
+  abstract class Shape {
+    // abstract — every subclass MUST provide its own implementation;
+    // Shape does not know how to calculate the area (a circle, rectangle, and triangle do it differently)
+    abstract fun area(): Double
+
+    // regular method with an implementation — shared by all subclasses,
+    // but it can also be overridden
+    fun describe() {
+      println("Area: ${area()}")
+    }
+  }
+
+  class Circle(val radius: Double) : Shape() {
+    override fun area() = Math.PI * radius * radius
+  }
+
+  class Square(val edge: Double) : Shape() {
+    override fun area() = edge * edge
+    override fun describe() {
+       super.describe() // access the describe function from the parent class
+       println("This is a square")
+    }
+  }
+
+  val circle = Circle(5.0)
+  circle.describe() // Area: 78.53...
+
+  val square = Square(5.0)
+  square.describe()
+  // Area: 25.0
+  // This is a square
+  ```
+
+  **Differences between `abstract class` and `interface`:**
+
+  | Feature | `abstract class` | `interface` |
+  |---|---|---|
+  | Instantiation | not possible | not possible |
+  | Fields with state | yes | no |
+  | Constructor | yes | no |
+  | Method implementation | yes — methods can be abstract (without a body) or concrete (with a body) | yes — methods can have a default implementation, but do not have to; a class implementing a method without a body must provide its own implementation |
+  | Inheritance | only one class | multiple interfaces at the same time |
+
+  **When to use each option:**
+  - `abstract class` — when subclasses share state (fields) or base logic; when the class hierarchy represents an “is a kind of” relationship (e.g., a `Circle` is a `Shape`).
+  - `interface` — when you only need to define a contract (what a class can do); when one class should fulfill multiple independent contracts.
+
+## Special Classes
+
+  - **Data class** — a special class type for storing data. It automatically generates `equals()`, `hashCode()`, `toString()`, `copy()`, and `componentN()` methods:
+    ```kotlin
+    data class Product(val name: String, val price: Double)
+    val coffee = Product("Kawa", 12.99)
+    println(coffee) // Product(name=Kawa, price=12.99)
+    val cheaperCoffee = coffee.copy(price = 10.99)
+    ```
+
+  - **object** — a keyword for creating singletons (single instances of classes) or anonymous objects.
+
+    * **Singleton:**
+    ```kotlin
+    object Logger {
+      fun log(msg: String) {
+        println("LOG: $msg")
+      }
+    }
+    Logger.log("Application started")
+    ```
+
+    * **Anonymous object** — useful, for example, for implementing interfaces on the fly:
+    ```kotlin
+    val listener = object : Clickable {
+      override fun click() {
+        println("Anonymous object clicked")
+      }
+    }
+    listener.click()
+    ```
+
+    * **companion object** — an object associated with a class. It lets you create static-like methods and fields without creating a separate instance:
+    ```kotlin
+    class User(val name: String) {
+      companion object {
+        fun createAnonymous() = User("Anonymous")
+      }
+    }
+    val anonymous = User.createAnonymous()
+    ```
+
+  - **enum class** — an enumeration type that defines a limited set of constant values. It is useful for representing states, types, and categories:
+    ```kotlin
+    enum class Status {
+      LOADING, SUCCESS, ERROR
+    }
+
+    val status = Status.SUCCESS
+    when (status) {
+      Status.LOADING -> println("Loading...")
+      Status.SUCCESS -> println("Success!")
+      Status.ERROR   -> println("An error occurred")
+    }
+    ```
+    Kotlin enums can have their own properties, methods, and constructors. This lets them store additional data and behavior.
+
+    ```kotlin
+    enum class OrderStatus(val description: String, val isFinal: Boolean) {
+      NEW("New order", false),
+      IN_PROGRESS("In progress", false),
+      COMPLETED("Completed", true),
+      CANCELLED("Cancelled", true); // note the semicolon
+    }
+    ```
+
+  - **sealed class / sealed interface** — a class or interface representing a **closed type hierarchy**: all direct subtypes must be defined in the same package and compilation module (in Kotlin before 1.5, they had to be in the same file). The compiler therefore knows all possible subtypes, so a `when` expression can be exhaustive without an `else` branch.
+
+    > A **compilation module** is a set of Kotlin files compiled together in one step (e.g., one Gradle module in an Android project). A sealed class subtype cannot be defined in another library or module — the hierarchy is closed to external code.
+
+    ```kotlin
+    sealed class Result {
+      data class Success(val value: Int) : Result() // use class when the constructor is non-empty
+      data class Failure(val error: String) : Result()
+      data object Loading : Result() // use object when there are no constructor parameters
+    }
+
+    fun handle(result: Result) {
+      when (result) {
+        is Result.Success -> println("Result: ${result.value}")
+        is Result.Failure -> println("Error: ${result.error}")
+        is Result.Loading -> println("Loading...")
+        // no else is needed — the compiler knows these are all cases
+      }
+    }
+    ```
+
+    A `sealed interface` works similarly, but implementing classes can also inherit from another class (a sealed class cannot do this because Kotlin does not support multiple class inheritance):
+
+    ```kotlin
+    sealed interface Result {
+      data class Success(val value: Int) : Result
+      data class Failure(val error: String) : Result
+      data object Loading : Result
+    }
+
+    fun handle(result: Result) {
+      when (result) {
+        is Result.Success -> println("Result: ${result.value}")
+        is Result.Failure -> println("Error: ${result.error}")
+        is Result.Loading -> println("Loading...")
+      }
+    }
+    ```
+
+    The key difference: `data class Success` can also inherit from another class here, e.g., `class Success(...) : SomeBaseClass(), Result`, which is not possible with a `sealed class`.
+
+    **Comparison of `enum class` and `sealed class`:**
+
+    | Feature | `enum class` | `sealed class` |
+    |---|---|---|
+    | Number of instances | fixed, one per value | any number of objects of each subtype |
+    | Data in variants | same structure for all | each subtype can have different fields |
+    | Subtypes | only enumeration constants | full classes (`data class`, `object`, classes with logic) |
+    | Exhaustive `when` | yes | yes |
+    | Use case | fixed set of simple constants (e.g., `Direction.NORTH`) | type hierarchy with different data (e.g., operation result or state) |
+
+  ---
+
+## `lateinit` and `by lazy`
+
+  In Kotlin, variables must be initialized when they are declared. However, two mechanisms let you defer initialization until later.
+
+### `lateinit`
+
+  The `lateinit` keyword is used with non-null `var` properties when initialization cannot happen at the declaration, but will happen before the first use. It works only with object types (not `Int`, `Boolean`, etc.).
+
+  ```kotlin
+  class UserRepository {
+    lateinit var database: Database  // initialized later, e.g., by a DI framework
+
+    fun setup(db: Database) {
+      database = db
+    }
+
+    fun findUser(id: Int) = database.query(id)
+  }
+  ```
+
+  - Reading a `lateinit` property before it has been initialized throws an `UninitializedPropertyAccessException`.
+  - You can check whether a property has been initialized: `::database.isInitialized`.
+
+### `by lazy`
+
+  The `by lazy` delegate provides **lazy initialization** for `val` properties — the value is computed on first access and then cached.
+
+  ```kotlin
+  val processedData: List<String> by lazy {
+    println("Initializing the list...")
+    listOf("A", "B", "C").map { it.lowercase() }
+  }
+
+  // The lazy block has not run yet
+  println(processedData) // initialization happens now
+  println(processedData) // second time: cached result; the block does not run again
+  ```
+
+  **Comparison:**
+
+  | Feature | `lateinit` | `by lazy` |
+  |---|---|---|
+  | Property type | `var` | `val` |
+  | Initialization | manual, at any point | automatic, on first use |
+  | Allowed types | object types only | all types |
+  | Thread safety | no | yes, by default |
+
+  ---
+
+## Destructuring
+
+  Destructuring lets you split an object into several variables in one statement. It is available for `data class` instances, pairs (`Pair`), map entries, and other types.
+
+  - **Destructuring a `data class`:**
+    ```kotlin
+    data class Product(val name: String, val price: Double)
+    val coffee = Product("Kawa", 12.99)
+
+    val (name, price) = coffee
+    println("$name costs $price zł") // Kawa costs 12.99 zł
+    ```
+
+  - **Destructuring while iterating over a map:**
+    ```kotlin
+    val map = mapOf("a" to 1, "b" to 2) // the `to` keyword creates a pair, e.g., "a" to 1 == Pair("a", 1)
+    for ((key, value) in map) {
+      println("$key = $value")
+    }
+    ```
+
+  - **Ignoring a value with `_`:**
+    If a variable is not needed, you can omit it:
+    ```kotlin
+    val (_, price) = Product("Tea", 8.50) // name is ignored
+    ```
+
+  - **Destructuring in lambdas:**
+    ```kotlin
+    val products = listOf(Product("Kawa", 12.99), Product("Sok", 5.00))
+    products.forEach { (name, price) ->
+      println("$name: $price zł")
+    }
+    ```
+
+  ---
+
+## Scope Functions
+
+  Scope functions are built-in Kotlin functions that execute a block of code in the context of a given object. They make code more concise, especially when initializing objects and handling nullable values.
+
+  Kotlin has five scope functions: `let`, `apply`, `run`, `also`, and `with`. They differ in how you refer to the object (`this` or `it`) and what they return.
+
+  | Function | Object reference | Returns |
+  |---|---|---|
+  | `let` | `it` | block result |
+  | `apply` | `this` | object |
+  | `run` | `this` | block result |
+  | `also` | `it` | object |
+  | `with` | `this` | block result |
+
+### `apply` — configuring an object
+
+  Used mainly to initialize or configure an object. Inside the block, the object is available as `this`. It returns the object itself.
+
+  ```kotlin
+  data class Config(var host: String = "", var port: Int = 0, var timeout: Int = 0)
+
+  val config = Config().apply {
+    host = "localhost"
+    port = 8080
+    timeout = 30
+  }
+  ```
+
+### `let` — working with a value and handling null
+
+  Often used with the `?.` operator to safely handle nullable values. The object is available as `it`.
+
+  ```kotlin
+  val text: String? = fetchText()
+  text?.let {
+    println("Length: ${it.length}") // runs only when text != null
+  }
+
+  // let for transforming a value:
+  val doubleLength = "Kotlin".let { it.length * 2 } // 12
+  ```
+
+### `run` — a block of operations that returns a result
+
+  There are two forms:
+
+  - **On an object** — similar to `apply`, but returns the block result (not the object). The object is available as `this`:
+    ```kotlin
+    val result = StringBuilder().run {
+      append("Kotlin ")
+      append("is great")
+      toString() // this value is returned
+    }
+    println(result) // Kotlin is great
+    ```
+
+  - **Without an object** — a code block executed in place that returns a value. Useful for extracting a piece of logic or initializing a variable that requires several steps:
+    ```kotlin
+    val value = run {
+      val base = 10
+      val factor = 3
+      base * factor // block result assigned to value
+    }
+    println(value) // 30
+    ```
+
+### `also` — side effects
+
+  Used when an additional operation (e.g., logging) is needed without modifying the object. It returns the object.
+
+  ```kotlin
+  val list = mutableListOf(1, 2, 3)
+    .also { println("List before: $it") }
+  list.add(4)
+  ```
+
+### `with` — operating on an object without an extension call
+
+  Takes an object as an argument (rather than as the call receiver). Useful when the object is already known and is not the result of an expression.
+
+  ```kotlin
+  val person = Person("Anna", 25)
+  with(person) {
+    println("Name: $name")
+    println("Age: $age")
+  }
+  ```
+
+  **Guidelines — when to use each function:**
+  - `apply` — configuring or initializing an object.
+  - `let` — working with nullable values or limiting a variable's scope.
+  - `also` — a side effect (e.g., logging) without changing the object.
+  - `run` / `with` — a sequence of operations on an object when you need the block result.
+
+  ---
+
+## Extension Functions and Properties
+
+  Extension functions and properties let you add new methods or properties to existing classes — even classes you cannot modify (e.g., library or Java classes).
+
+### Extension Functions
+
+  - Define them outside the class, prefixing the function name with the type being extended:
+    ```kotlin
+    fun String.reverse(): String = this.reversed()
+
+    val text = "Kotlin"
+    println(text.reverse()) // "niltok"
+    ```
+
+  - You can extend any type, including Android classes:
+    ```kotlin
+    fun Context.toast(msg: String) =
+      Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
+    ```
+
+  - Extension functions can access the extended type's public methods and properties using `this`.
+
+  - Extension functions do not modify the original class.
+
+### Extension Properties
+
+  - They let you add “pseudo-properties” to existing classes:
+    ```kotlin
+    val String.reversed: String
+      get() = this.reversed()
+
+    println("Android".reversed) // "diordnA"
+    ```
+
+  - Extension properties cannot have state (they cannot declare a backing field); they can only have a getter.
+
+  **Summary:**
+  - Extension functions and properties improve readability and help you write more idiomatic APIs.
+  - They do not modify the original classes — they are safe and convenient.
+
+  ---
 
 ## Documentation
 
