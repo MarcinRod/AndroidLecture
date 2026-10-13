@@ -65,3 +65,5 @@ Repository has two branches - master branch shows differences between MVVM appro
 ### 📱 Demo Application for Topics 12-13: [SipRank](https://github.com/MarcinRod/SipRank)
 
 ---
+Year 26/27
+13.10.2026 - Topics covered 1-7
