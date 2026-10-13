@@ -1,6 +1,6 @@
 # 🖥️ Labs
 
-## [1. Introduction to Android Studio](https://marcin.rodziewicz.pracownik.put.poznan.pl/codelabs/lab1_android_studio/1szWAXuY4yeEZHvKLN3HPNQfmVztOWqvLAt_SMdB0PFU)
+## [1. Introduction to Android Studio](https://marcin.rodziewicz.pracownik.put.poznan.pl/PutCodelabs/labs/lab1_android/index_en.html)
 ### What You'll Learn:
 * How to create project from template in Android Studio
 * Get familiar with project structure in Android Studio
@@ -9,7 +9,7 @@
 * How to connect and run application in Android Studio on physical Android device
 * How to debug application
 
-## [2. Compose Fundamentals](https://marcin.rodziewicz.pracownik.put.poznan.pl/codelabs/lab2_compose/1svaUDoN-YDONRn0crlOcPBx_kXp8RZKks00jorvxzFk)
+## [2. Compose Fundamentals](https://marcin.rodziewicz.pracownik.put.poznan.pl/PutCodelabs/labs/lab2_hangman/index_en.html)
 ### What You'll Learn:
 * Creating user interface
 * Kotlin fundamentals - creating variables, functions, classes, using basic data types
@@ -17,7 +17,7 @@
 * Creating custom composable functions
 * Managing composable function state
 
-## [3. Lists and Multi-Screen Applications](https://marcin.rodziewicz.pracownik.put.poznan.pl/codelabs/lab3_todo/1CvbxzIqyWnMpE4EEbgX74N07AKFlQaHkr-cd033rlXw/)
+## [3. Lists and Multi-Screen Applications](https://marcin.rodziewicz.pracownik.put.poznan.pl/PutCodelabs/labs/lab3_todo/index_en.html)
 ### What You'll Learn:
 * Creating user interface with lists (`LazyColumn`), floating buttons (`FloatingActionButton`), dialogs (`AlertDialog`) and top bar (`Topbar`)
 * Using navigation component for application navigation
