@@ -1,6 +1,6 @@
 # 🖥️ Laboratoria
 
-## [1. Wprowadzenie do Android Studio](https://marcin.rodziewicz.pracownik.put.poznan.pl/codelabs/lab1_android_studio/1szWAXuY4yeEZHvKLN3HPNQfmVztOWqvLAt_SMdB0PFU)
+## [1. Wprowadzenie do Android Studio](https://marcin.rodziewicz.pracownik.put.poznan.pl/PutCodelabs/labs/lab1_android/index.html)
 ### Czego się nauczysz:
 * Jak stworzyć projekt z szablonu w Android Studio
 * Zapoznasz się ze strukturą projektu w Android Studio
@@ -9,7 +9,7 @@
 * Jak podłączyć i uruchomić aplikację w Android Studio na fizycznym urządzeniu z Androidem
 * Jak debugować aplikację
 
-## [2. Podstawy Compose](https://marcin.rodziewicz.pracownik.put.poznan.pl/codelabs/lab2_compose/1svaUDoN-YDONRn0crlOcPBx_kXp8RZKks00jorvxzFk)
+## [2. Podstawy Compose](https://marcin.rodziewicz.pracownik.put.poznan.pl/PutCodelabs/labs/lab2_hangman/index.html)
 ### Czego się nauczysz:
 * Tworzenia interfejsu użytkownika
 * Podstaw języka Kotlin - tworzenie zmiennych, funkcji, klas, wykorzystania podstawowych typów danych
@@ -17,7 +17,7 @@
 * Tworzenia własnych funkcji kompozycyjnych
 * Zarządzania stanem funkcji kompozycyjnych
 
-## [3. Listy i aplikacje wieloekranowe](https://marcin.rodziewicz.pracownik.put.poznan.pl/codelabs/lab3_todo/1CvbxzIqyWnMpE4EEbgX74N07AKFlQaHkr-cd033rlXw/)
+## [3. Listy i aplikacje wieloekranowe](https://marcin.rodziewicz.pracownik.put.poznan.pl/PutCodelabs/labs/lab3_todo/index.html)
 ### Czego się nauczysz:
 * Tworzenia interfejsu użytkownika z listami (`LazyColumn`), pływającymi przyciskami (`FloatingActionButton`), oknami dialogowymi (`AlertDialog`) i górnym paskiem (`Topbar`)
 * Wykorzystania komponentu nawigacji do nawigacji w aplikacji
