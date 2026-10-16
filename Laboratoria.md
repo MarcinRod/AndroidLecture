@@ -26,7 +26,7 @@
 * Wykorzystania systemu intencji (ang. Intents)
 * Tworzenia animacji
 
-## [4. Architektura aplikacji i operacje sieciowe](https://marcin.rodziewicz.pracownik.put.poznan.pl/codelabs/lab4_jokeApp/1BDB38sR9axVXsPWM5iVVuuoDs0CBVhqCLETFy1-0Jd8)
+## [4. Architektura aplikacji i operacje sieciowe](https://marcin.rodziewicz.pracownik.put.poznan.pl/PutCodelabs/labs/lab4_jokeApi/index.html)
 ### Czego się nauczysz:
 * wykorzystania Retrofit do komunikacji z REST API
 * wykorzystania konwertera Moshi do przetwarzania odpowiedzi z API
