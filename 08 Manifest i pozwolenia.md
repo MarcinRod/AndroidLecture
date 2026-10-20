@@ -25,7 +25,8 @@ Plik **AndroidManifest.xml** to jeden z najważniejszych plików w każdej aplik
     <application
         android:label="Moja Aplikacja"
         android:icon="@mipmap/ic_launcher">
-        <activity android:name=".MainActivity">
+        <activity android:name=".MainActivity"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
